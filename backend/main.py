@@ -4,7 +4,8 @@ from typing import List, Optional
 from models.models import (
     AnalysisResult, RiskAssessment, PharmacogenomicProfile, 
     ClinicalRecommendation, LLMExplanation, QualityMetrics, 
-    RiskLabel, Severity, Phenotype, DetectedVariant
+    RiskLabel, Severity, Phenotype, DetectedVariant,
+    ChatRequest, ChatResponse
 )
 from services import vcf_parser, risk_engine, llm_service
 import time
@@ -148,6 +149,30 @@ async def analyze_vcf(
             
         return all_results
 
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/chat", response_model=ChatResponse)
+async def chat_with_genome(request: ChatRequest):
+    """
+    Contextual medical chatbot endpoint.
+    Answers follow-up questions using specific analysis results as context.
+    """
+    try:
+        # Pass the context as a list of dicts for the LLM service
+        context_dicts = [res.model_dump() for res in request.context]
+        
+        response_data = await llm_service.generate_chat_response(
+            query=request.query,
+            context=context_dicts
+        )
+        
+        return ChatResponse(
+            response=response_data.get("response", ""),
+            suggested_follow_ups=response_data.get("suggested_follow_ups", [])
+        )
     except Exception as e:
         import traceback
         traceback.print_exc()

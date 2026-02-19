@@ -26,3 +26,23 @@ export const analyzePharmacogenomics = async (
 
   return response.json();
 };
+
+export const chatGenome = async (
+  query: string,
+  context: AnalysisResult[]
+): Promise<{ response: string; suggested_follow_ups: string[] }> => {
+  const response = await fetch(`${API_BASE_URL}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query, context }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || 'Chat failed');
+  }
+
+  return response.json();
+};

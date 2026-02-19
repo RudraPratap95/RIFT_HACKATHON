@@ -35,7 +35,11 @@ export const DrugInput: React.FC<DrugInputProps> = ({ drug, setDrug }) => {
               type="button"
               onClick={() => {
                 const currentDrugs = drug.split(',').map(item => item.trim()).filter(item => item.length > 0);
-                if (!currentDrugs.includes(d)) {
+                if (currentDrugs.includes(d)) {
+                  // Remove the drug if it's already selected
+                  setDrug(currentDrugs.filter(item => item !== d).join(', '));
+                } else {
+                  // Add the drug if it's not selected
                   setDrug(currentDrugs.length > 0 ? `${currentDrugs.join(', ')}, ${d}` : d);
                 }
               }}

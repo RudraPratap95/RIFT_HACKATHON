@@ -146,7 +146,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
               <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Genomic Profile</h3>
             </div>
             <div className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm ring-1 ring-slate-100/50 h-full">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="text-left">
                   <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Target Gene</p>
                   <p className="text-2xl font-black text-indigo-900 leading-tight flex items-baseline gap-1">

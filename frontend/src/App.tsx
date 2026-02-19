@@ -4,6 +4,7 @@ import { FileUpload } from './components/FileUpload';
 import { DrugInput } from './components/DrugInput';
 import { Dashboard } from './components/Dashboard';
 import { ResultsDisplay } from './components/ResultsDisplay';
+import { GenomeChat } from './components/GenomeChat';
 import { useAnalysis } from './hooks/useAnalysis';
 import { generatePDFReport, exportJSON } from './utils/exportUtils';
 import {
@@ -70,16 +71,16 @@ const App: React.FC = () => {
     <div className="min-h-screen flex flex-col font-sans text-slate-900">
       <Header currentView={view} setCurrentView={setView} />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8 md:space-y-12">
         {view === 'analysis' ? (
           <>
             {/* Intro / Hero Section */}
-            <div className="text-center max-w-3xl mx-auto space-y-6 animate-fade-in">
+            <div className="text-center max-w-3xl mx-auto space-y-4 md:space-y-6 animate-fade-in">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-[10px] font-black uppercase tracking-widest shadow-sm">
                 <Sparkles className="w-3 h-3" />
                 Vanguard Pharmacogenomics v1.1
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95] md:leading-[0.9]">
                 Precision Medicine <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-indigo-600">Powered by AI</span>
               </h1>
@@ -266,6 +267,8 @@ const App: React.FC = () => {
           />
         )}
       </main>
+
+      {results && <GenomeChat analysisResults={results} />}
 
       <footer className="bg-white/30 backdrop-blur-md border-t border-white/20 py-10 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center space-y-4">

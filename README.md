@@ -226,10 +226,18 @@ The UI doesn't just show data; it provides **Directives**.
 
 ---
 
+### 3. "Chat with your Genome" (Medical AI)
+We've implemented a **Contextual Conversational Agent** that allows patients and doctors to ask follow-up questions about the report.
+- **High-Context**: The AI knows your specific rsIDs and risk levels.
+- **Safe by Design**: Integrated mandatory disclaimers and strictly contextual responses to prevent hallucinated medical advice.
+- **Smart Follow-ups**: The AI suggests relevant questions (e.g., "What should I tell my doctor?") tailored to the genomic results.
+
+---
+
 ## 📈 Future Horizon: PharmaGuard 2.0
 - **Polygenic Risk Scores (PRS)**: Integrating hundreds of minor-impact variants for more nuanced risk curves.
 - **EHR Integration**: FHIR API support for seamless connection to hospital systems.
-- **Live Interaction**: A specialized medical chatbot for doctors to "chat" with the genetic report.
+- **Wearable Integration**: Cross-referencing genomic risk with real-time heart rate and metabolism data.
 
 ---
 
