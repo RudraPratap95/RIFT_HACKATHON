@@ -9,17 +9,23 @@
 
 | Resource | URL |
 |----------|-----|
-| 🌐 Live Demo | `https://pharmaguard.vercel.app` *(replace with your URL)* |
-| 🎥 LinkedIn Demo Video | `https://linkedin.com/posts/your-post-link` *(replace with your link)* |
-| 📁 GitHub Repo | `https://github.com/your-username/pharmaguard` *(replace with your repo)* |
+| 🌐 Live Demo | `https://pharmaguard.vercel.app` |
+| 🎥 LinkedIn Demo Video | `https://linkedin.com/posts/your-post-link` |
+| 📁 GitHub Repo | `https://github.com/your-username/pharmaguard` |
 
 ---
 
-## 🧪 Problem Statement
+## 🧪 Problem Overview
 
-Adverse drug reactions kill over **100,000 Americans annually** — and many are preventable. Pharmacogenomics studies how a patient's genetic variants affect how their body processes drugs. With this knowledge, clinicians can personalize dosing before a patient ever takes a pill.
+Adverse drug reactions kill over **100,000 Americans annually**. Many of these deaths are preventable through **pharmacogenomic testing** — analyzing how genetic variants affect drug metabolism.
 
-**PharmaGuard** bridges the gap between raw genomic data (VCF files) and actionable clinical decisions — using AI to parse variants, predict drug risks, and generate plain-language explanations aligned with CPIC guidelines.
+**Core Challenge:**
+Build an AI-powered system that:
+1. **Parses authentic VCF files** (Variant Call Format v4.2).
+2. **Identifies variants** across 6 critical genes: `CYP2D6`, `CYP2C19`, `CYP2C9`, `SLCO1B1`, `TPMT`, `DPYD`.
+3. **Predicts drug-specific risks**: Safe, Adjust Dosage, Toxic, Ineffective, Unknown.
+4. **Generates clinical explanations** using LLMs with specific citations and biological mechanisms.
+5. **Provides dosing recommendations** aligned with CPIC guidelines.
 
 ---
 
@@ -36,22 +42,98 @@ Adverse drug reactions kill over **100,000 Americans annually** — and many are
 
 ---
 
-## 🏗️ Architecture
+## 👥 Team Structure (4-Person Battle Plan)
 
-PharmaGuard is a modern, client-side heavy web application that leverages Google's Gemini 1.5 Flash for on-device clinical reasoning (via secure API).
+To win in a 10-hour sprint, we divide responsibilities to avoid overlap and maximize execution.
+
+### 👤 Person 1: Core Logic Lead (Genomics Brain)
+- **Focus:** VCF Parsing & Genetic Logic.
+- **Tasks:** Build the Python VCF parser; Implement Diplotype/Phenotype mapping; Map Phenotypes to Drug Risks.
+- **Goal:** Input (VCF+Drug) → Output (Risk Profile).
+
+### 👤 Person 2: LLM & Clinical Lead (Explainable AI)
+- **Focus:** Medical Intelligence.
+- **Tasks:** Prompt Engineering; LLM Service integration (OpenAI/ChatGPT); Structured JSON explanation generator.
+- **Goal:** Transform data into clinically sound text.
+
+### 👤 Person 3: Backend Integration Lead (The Architect)
+- **Focus:** System Orchestration.
+- **Tasks:** FastAPI setup; `/analyze` endpoint; Data flow between Person 1 & 2; Error handling & Schemas.
+- **Goal:** A robust API connecting all parts.
+
+### 👤 Person 4: Frontend & Deployment Lead (The Presenter)
+- **Focus:** UI/UX & Live Success.
+- **Tasks:** React UI (Upload, Search, Results); Color-coded risk display; Live deployment (Vercel/Render); LinkedIn Demo capture.
+- **Goal:** Make it look premium and work live.
+
+---
+
+## ⏳ 10-Hour Sprint Roadmap
+
+| Time | Phase | Objectives |
+|------|-------|------------|
+| **0-1h** | **Setup** | Initialize `/backend` (FastAPI) and `/frontend` (Vite). |
+| **1-4h** | **Core Build** | Build VCF parser, LLM prompts, and UI components. |
+| **4-6h** | **Integration** | Connect FE to BE. Verify data flow: Upload -> AI -> Display. |
+| **6-8h** | **Polish** | **Crucial:** Match JSON Schema exactly. Add Glassmorphism UI. |
+| **8-9h** | **Deployment** | Deploy to Vercel/Render. Fix CORS/Env issues. |
+| **9-10h**| **Submission**| Record Demo video, final README polish, submit to RIFT. |
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|-------|------------|
+| **Frontend** | React 19 + Tailwind CSS + Lucide Icons |
+| **Backend** | FastAPI (Python 3.10+) |
+| **AI/LLM** | OpenAI API (GPT-4o or ChatGPT-3.5) |
+| **Parsing** | Custom Python VCF Stream Parser |
+| **Deployment**| Vercel (Frontend) + Render/Railway (Backend) |
+
+---
+
+## 📁 Project Structure
+
+```text
+PHARMA_GUARD/
+├── backend/                # FastAPI Application (Person 1, 2, 3)
+│   ├── main.py             # Entry point & API routes
+│   ├── requirements.txt    # Python dependencies
+│   ├── .env                # OpenAI API Key
+│   ├── services/           
+│   │   ├── genetics_logic.py # VCF parsing & Risk rules (Person 1)
+│   │   └── llm_service.py    # LLM Clinical explanations (Person 2)
+│   └── models/             # Pydantic models for JSON schema (Person 3)
+├── frontend/               # Vite + React Application (Person 4)
+│   ├── src/
+│   │   ├── components/     # UI elements (DrugInput, ResultsDisplay)
+│   │   ├── App.tsx         # Main interactive UI
+│   │   ├── api.ts          # Logic to call backend /analyze
+│   │   └── types.ts        # TypeScript interfaces
+│   ├── package.json
+│   └── vite.config.ts
+├── samples/                # Sample .vcf files for testing
+├── .gitignore
+└── README.md               # Team Battle Plan & Docs
+```
+
+---
+
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                        PharmaGuard AI                       │
 │                                                             │
 │  ┌──────────┐    ┌────────────────┐    ┌─────────────────┐  │
-│  │  VCF     │───▶│ Local Parsing  │───▶│ Context-Enriched│  │
-│  │  Upload  │    │ (Web Worker/JS)│    │ Prompt Generation│  │
+│  │  VCF     │───▶│ FastAPI Backend│───▶│ Genetics Engine │  │
+│  │  Upload  │    │ (Python)       │    │ (Rule-based)    │  │
 │  └──────────┘    └────────────────┘    └────────┬────────┘  │
 │                                                 │           │
 │  ┌──────────┐                         ┌─────────▼────────┐  │
-│  │  Drug    │────────────────────────▶│  Gemini 1.5 Flash│  │
-│  │  Input   │                         │  Genomic Engine  │  │
+│  │  Drug    │────────────────────────▶│  LLM (OpenAI)    │  │
+│  │  Input   │                         │  Explanations    │  │
 │  └──────────┘                         └─────────┬────────┘  │
 │                                                 │           │
 │                                       ┌─────────▼────────┐  │
@@ -68,231 +150,77 @@ PharmaGuard is a modern, client-side heavy web application that leverages Google
 
 ---
 
-## 🛠️ Tech Stack
+## 📋 Mandatory JSON Schema (EXACT Match)
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 19 + Tailwind CSS + Lucide Icons |
-| AI Engine | Google Gemini 1.5 Flash (via @google/genai) |
-| Runtime | Vite + ESM.sh (No-build compatible architecture) |
-| VCF Parsing | Custom local stream parser for INFO/STAR alleles |
-| Styling | Glassmorphism CSS + Premium Inter Typography |
+```json
+{
+  "patient_id": "PATIENT_XXX",
+  "drug": "DRUG_NAME",
+  "timestamp": "ISO8601_timestamp",
+  "risk_assessment": {
+    "risk_label": "Safe|Adjust Dosage|Toxic|Ineffective|Unknown",
+    "confidence_score": 0.0,
+    "severity": "none|low|moderate|high|critical"
+  },
+  "pharmacogenomic_profile": {
+    "primary_gene": "GENE_SYMBOL",
+    "diplotype": "*X/*Y",
+    "phenotype": "PM|IM|NM|RM|URM|Unknown",
+    "detected_variants": [ { "rsid": "rsXXXX", "gene": "...", "star_allele": "..." } ]
+  },
+  "clinical_recommendation": { "action": "...", "alternative_drugs": [], "cpic_guideline": "..." },
+  "llm_generated_explanation": { "summary": "...", "mechanism": "...", "clinical_implications": "..." },
+  "quality_metrics": { "vcf_parsing_success": true, "variants_detected": 0 }
+}
+```
+
+---
+
+---
+
+## 🎯 Simplified Risk Rules (Rule Engine Logic)
+
+To ensure clinical accuracy during the 10-hour sprint, we use these established mappings for the 6 target genes:
+
+| Gene | Phenotype | Drug Risk Prediction |
+|------|-----------|----------------------|
+| **CYP2D6** | PM (Poor Metabolizer) | **Ineffective** (for Codeine) |
+| | URM (Ultra-Rapid) | **Toxic** |
+| | IM (Intermediate) | **Adjust Dosage** |
+| **CYP2C9** | Reduced Function | **Adjust Dosage** (for Warfarin) |
+| | Severe Deficiency | **Toxic** |
+| **CYP2C19** | PM (Poor) | **Ineffective** (for Clopidogrel) |
+| | IM (Intermediate) | **Adjust Dosage** |
+| **SLCO1B1** | Reduced Function | **Toxic Risk** (for Simvastatin) |
+| **TPMT** | Low Activity | **Toxic** (for Azathioprine) |
+| **DPYD** | Deficiency | **Toxic** (for Fluorouracil) |
+
+---
+
+## 🚨 Critical Winning Factors (Judge-Proofing)
+
+Follow these rules to ensure a high evaluation score:
+
+1. **Schema Compliance**: JSON **MUST** match the exact fields in the provided output spec. No extra or missing fields.
+2. **Clinical Authenticity**: Explanations must sound professional and include the biological mechanism (e.g., "CYP2D6 converts Codeine to Morphine...").
+3. **Live Success**: The deployment must work on the first try. Fix CORS and environment variables early (Hour 8).
+4. **Visual "WOW"**: Risk labels must be color-coded (Green: Safe, Yellow: Adjust, Red: Toxic/Ineffective).
 
 ---
 
 ## 🚀 Installation & Setup
 
-### Prerequisites
+### 🖥️ Backend (FastAPI)
+1. **Navigate to backend:** `cd backend`
+2. **Setup Virtual Env:** `python -m venv venv` and `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
+3. **Install dependencies:** `pip install -r requirements.txt`
+4. **Environment:** Create a `.env` file with `OPENAI_API_KEY`.
+5. **Run:** `uvicorn main:app --reload`
 
-- Node.js v18+ (or Python 3.10+)
-- An Anthropic API key (or OpenAI)
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/pharmaguard.git
-cd pharmaguard
-```
-
-### 2. Install Dependencies
-
-```bash
-# Frontend
-cd client
-npm install
-
-# Backend
-cd ../server
-npm install
-```
-
-### 3. Configure Environment Variables
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-
-```env
-ANTHROPIC_API_KEY=your_api_key_here
-PORT=3001
-NODE_ENV=development
-```
-
-### 4. Run Locally
-
-```bash
-# In /server
-npm run dev
-
-# In /client (separate terminal)
-npm run dev
-```
-
-Visit `http://localhost:5173`
-
----
-
-## 📖 Usage
-
-### Step 1 — Upload a VCF File
-
-Drag and drop a `.vcf` file (up to 5 MB) onto the upload zone, or click to browse. A sample file is provided in `/samples/sample_patient.vcf`.
-
-### Step 2 — Enter Drug Name(s)
-
-Type one or more drug names (comma-separated) in the input field:
-
-```
-CODEINE, CLOPIDOGREL, FLUOROURACIL
-```
-
-Supported drugs: `CODEINE`, `WARFARIN`, `CLOPIDOGREL`, `SIMVASTATIN`, `AZATHIOPRINE`, `FLUOROURACIL`
-
-### Step 3 — Analyze
-
-Click **Analyze** and wait ~5–10 seconds. Results are displayed with color-coded risk labels and expandable sections.
-
-### Step 4 — Export
-
-Download the structured JSON output or copy it to clipboard.
-
----
-
-## 📡 API Documentation
-
-### `POST /api/analyze`
-
-Analyzes a VCF file against one or more drugs.
-
-**Request** — `multipart/form-data`
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `vcf_file` | File | VCF file (.vcf, max 5MB) |
-| `drugs` | String | Comma-separated drug names |
-| `patient_id` | String | Optional patient identifier |
-
-**Response** — `application/json`
-
-```json
-{
-  "patient_id": "PATIENT_001",
-  "drug": "CODEINE",
-  "timestamp": "2026-02-19T14:30:00Z",
-  "risk_assessment": {
-    "risk_label": "Adjust Dosage",
-    "confidence_score": 0.87,
-    "severity": "moderate"
-  },
-  "pharmacogenomic_profile": {
-    "primary_gene": "CYP2D6",
-    "diplotype": "*1/*4",
-    "phenotype": "IM",
-    "detected_variants": [
-      {
-        "rsid": "rs3892097",
-        "gene": "CYP2D6",
-        "star_allele": "*4",
-        "zygosity": "heterozygous",
-        "functional_impact": "loss_of_function"
-      }
-    ]
-  },
-  "clinical_recommendation": {
-    "action": "Use 75% of standard dose. Monitor for reduced analgesia.",
-    "alternative_drugs": ["tramadol", "morphine"],
-    "cpic_guideline": "CPIC Guideline for Codeine and CYP2D6"
-  },
-  "llm_generated_explanation": {
-    "summary": "Patient carries one non-functional CYP2D6*4 allele, resulting in intermediate metabolizer status. Codeine is converted to morphine by CYP2D6; reduced enzyme activity means lower morphine production and potentially reduced pain relief.",
-    "mechanism": "CYP2D6*4 contains a G>A splice site variant at position 1846 that disrupts normal mRNA splicing, producing a truncated, non-functional protein.",
-    "clinical_implications": "Risk of inadequate analgesia at standard doses. Consider dose adjustment or alternative opioid with non-CYP2D6 metabolism pathway."
-  },
-  "quality_metrics": {
-    "vcf_parsing_success": true,
-    "variants_detected": 3,
-    "genes_covered": ["CYP2D6"],
-    "confidence_basis": "high_quality_genotype"
-  }
-}
-```
-
-**Error Response**
-
-```json
-{
-  "error": "INVALID_VCF",
-  "message": "File does not conform to VCF v4.2 format. Missing ##fileformat header.",
-  "details": "Line 1 expected ##fileformat=VCFv4.x"
-}
-```
-
----
-
-## 🧬 Sample VCF File
-
-A demo VCF file is included at `/samples/sample_patient.vcf`. It encodes:
-
-| Gene | Variant | Star Allele | Drug Impact |
-|------|---------|-------------|-------------|
-| CYP2D6 | rs3892097 (het) | *4 | Codeine → Adjust Dosage |
-| CYP2C19 | rs4244285 (hom) | *2 | Clopidogrel → Ineffective |
-| CYP2C9 | rs1799853 (het) | *2 | Warfarin → Adjust Dosage |
-| SLCO1B1 | rs4149056 (het) | *5 | Simvastatin → Adjust Dosage |
-| TPMT | all WT | *1/*1 | Azathioprine → Safe |
-| DPYD | rs3918290 (het) | *2A | Fluorouracil → Toxic Risk |
-
----
-
-## 📁 Repository Structure
-
-```
-pharmaguard/
-├── client/                  # React frontend
-│   ├── src/
-│   │   ├── components/      # UI components
-│   │   ├── pages/           # Main app pages
-│   │   └── utils/           # Helpers
-│   └── package.json
-├── server/                  # Node.js backend
-│   ├── routes/
-│   │   └── analyze.js       # Main analysis endpoint
-│   ├── services/
-│   │   ├── vcfParser.js     # VCF parsing logic
-│   │   ├── riskEngine.js    # CPIC-based risk rules
-│   │   └── llmService.js    # Claude API integration
-│   ├── data/
-│   │   └── cpic_rules.json  # CPIC guideline mappings
-│   └── package.json
-├── samples/
-│   └── sample_patient.vcf   # Demo VCF file
-├── .env.example
-├── README.md
-└── LICENSE
-```
-
----
-
-## 🧠 LLM Integration Strategy
-
-PharmaGuard uses a structured prompt approach to ensure clinically accurate explanations:
-
-1. **Variant Context Injection** — Detected rsIDs, star alleles, and phenotype are injected into the prompt
-2. **CPIC Grounding** — The LLM is instructed to align recommendations with CPIC guideline evidence levels
-3. **Structured Output Enforcement** — System prompt mandates JSON-formatted response for reliable parsing
-4. **Hallucination Mitigation** — LLM is only asked to explain; risk labels are determined by deterministic rule engine first
-
----
-
-## 👥 Team Members
-
-| Name | Role |
-|------|------|
-| *(Your Name)* | Full Stack + LLM Integration |
-| *(Teammate)* | VCF Parsing + Risk Engine |
-| *(Teammate)* | UI/UX + Deployment |
+### 💻 Frontend (React + Vite)
+1. **Navigate to frontend:** `cd frontend`
+2. **Install dependencies:** `npm install`
+3. **Run:** `npm run dev`
 
 ---
 
@@ -302,6 +230,5 @@ MIT License — see `LICENSE` for details.
 
 ---
 
-## 🏷️ Hashtags
-
+## 🏷️ Submission Hashtags
 `#RIFT2026` `#PharmaGuard` `#Pharmacogenomics` `#AIinHealthcare`
