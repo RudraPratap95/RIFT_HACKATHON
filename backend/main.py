@@ -43,33 +43,58 @@ async def analyze_vcf(
         
         for drug in drug_list:
             # 2. Map Genetics to Risk (Person 1 Responsibility)
-            # This calls the logic being built by the Core Logic Lead
-            genetics_data = genetics_logic.map_genetics_to_risk(vcf_text, drug)
+            # genetics_logic.analyze_genetics expects a file-like iterator (list of strings)
+            genetics_data = genetics_logic.analyze_genetics(vcf_text.splitlines(), drug)
             
             # 3. Generate LLM explanations (Person 2 Responsibility)
             # This calls the service being built by the LLM Lead
             explanation_data = llm_service.generate_clinical_explanation(genetics_data, drug)
+
+            # Helper for safe Enum lookup
+            def safe_enum(enum_cls, value, default):
+                # Try direct match
+                for valid in enum_cls:
+                    if valid.value == value:
+                        return valid
+                return default
+
+            # Map raw strings to Enums
+            risk_val = genetics_data.get("risk_label", "Unknown")
+            severity_val = genetics_data.get("severity", "unknown")
+            phenotype_val = genetics_data.get("phenotype", "Unknown")
+
+            risk_enum = safe_enum(RiskLabel, risk_val, RiskLabel.UNKNOWN)
+            severity_enum = safe_enum(Severity, severity_val, Severity.NONE)
+            
+            # Simple mapper for likely logic outputs to Phenotype Enum
+            pheno_map = {
+                "NM": Phenotype.NM, "Normal": Phenotype.NM, 
+                "PM": Phenotype.PM, "Poor": Phenotype.PM,
+                "IM": Phenotype.IM, "Intermediate": Phenotype.IM, "Decreased": Phenotype.IM,
+                "RM": Phenotype.RM, "Rapid": Phenotype.RM,
+                "URM": Phenotype.URM, "Ultra-Rapid": Phenotype.URM,
+            }
+            phenotype_enum = pheno_map.get(phenotype_val, Phenotype.UNKNOWN)
             
             # 4. Construct Final Mandatory JSON (Person 3 Responsibility)
-            # We map the team results into our strict Pydantic model
             result = AnalysisResult(
                 patient_id=patient_id or f"PATIENT_{int(time.time())}",
                 drug=drug,
                 timestamp=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
                 risk_assessment=RiskAssessment(
-                    risk_label=genetics_data.get("risk_label", RiskLabel.UNKNOWN),
-                    confidence_score=0.90, # Logic or LLM can provide this
-                    severity=genetics_data.get("severity", Severity.NONE)
+                    risk_label=risk_enum,
+                    confidence_score=0.90,
+                    severity=severity_enum
                 ),
                 pharmacogenomic_profile=PharmacogenomicProfile(
-                    primary_gene=genetics_data.get("primary_gene", "UNKNOWN"),
+                    primary_gene=genetics_data.get("gene", "UNKNOWN"),
                     diplotype=genetics_data.get("diplotype", "*1/*1"),
-                    phenotype=genetics_data.get("phenotype", Phenotype.UNKNOWN),
-                    detected_variants=[] # Person 1 will populate this list
+                    phenotype=phenotype_enum,
+                    detected_variants=[] 
                 ),
                 clinical_recommendation=ClinicalRecommendation(
                     action=explanation_data.get("clinical_implications", "Standard monitoring."),
-                    alternative_drugs=[], # LLM or Logic can provide list
+                    alternative_drugs=[],
                     cpic_guideline=f"CPIC Guideline for {drug}"
                 ),
                 llm_generated_explanation=LLMExplanation(
@@ -79,8 +104,8 @@ async def analyze_vcf(
                 ),
                 quality_metrics=QualityMetrics(
                     vcf_parsing_success=True,
-                    variants_detected=genetics_data.get("variants_detected", 0),
-                    genes_covered=[genetics_data.get("primary_gene")] if genetics_data.get("primary_gene") else []
+                    variants_detected=0,
+                    genes_covered=[genetics_data.get("gene")] if genetics_data.get("gene") else []
                 )
             )
             all_results.append(result)
@@ -88,6 +113,8 @@ async def analyze_vcf(
         return all_results
 
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
