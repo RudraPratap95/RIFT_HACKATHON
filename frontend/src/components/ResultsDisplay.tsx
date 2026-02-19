@@ -172,33 +172,36 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
 
                 <div className="col-span-2 text-left">
                   <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-3">Detected Primary Variants</p>
-                  <div className="flex flex-wrap gap-2">
-                    {result.pharmacogenomic_profile.detected_variants.length > 0 ? (
-                      result.pharmacogenomic_profile.detected_variants.map((v, idx) => (
-                        <div key={idx} className="group relative bg-white border border-indigo-100 text-indigo-600 px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-sm hover:ring-2 hover:ring-indigo-400 transition-all cursor-default">
-                          <span className="text-indigo-400 mr-1">rs</span>{v.rsid.replace('rs', '')}
-                          {v.star_allele && <span className="ml-2 bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[9px] uppercase font-black">{v.star_allele}</span>}
+                  {/* Scrollable Container for Large Variant Sets */}
+                  <div className="max-h-[220px] overflow-y-auto pr-2 custom-scrollbar space-y-2">
+                    <div className="flex flex-wrap gap-2 pb-2">
+                      {result.pharmacogenomic_profile.detected_variants.length > 0 ? (
+                        result.pharmacogenomic_profile.detected_variants.map((v, idx) => (
+                          <div key={idx} className="group relative bg-white border border-indigo-100 text-indigo-600 px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-sm hover:ring-2 hover:ring-indigo-400 transition-all cursor-default flex-shrink-0">
+                            <span className="text-indigo-400 mr-1">rs</span>{v.rsid.replace('rs', '')}
+                            {v.star_allele && <span className="ml-2 bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[9px] uppercase font-black">{v.star_allele}</span>}
 
-                          {/* Rich Tooltip on Hover */}
-                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-slate-900 text-white rounded-xl text-[10px] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 shadow-xl border border-white/10">
-                            <div className="font-black uppercase text-indigo-400 mb-1">Variant Details</div>
-                            <div>Effect: <span className="text-slate-300">{(v.effect || 'unknown').replace('_', ' ')}</span></div>
-                            <div>Genotype: <span className="text-slate-300">{v.genotype || 'N/A'}</span></div>
-                            <div>Location: <span className="text-slate-300">{v.chromosome}:{v.position}</span></div>
-                            <div>Activity Score: <span className="text-slate-300">{v.activity_score !== undefined ? v.activity_score.toFixed(1) : '1.0'}</span></div>
-                            <div className="mt-1 flex gap-1">
-                              <span className="bg-white/10 px-1 rounded">{v.ref}</span>
-                              <span className="text-indigo-400">→</span>
-                              <span className="bg-teal-500/30 px-1 rounded">{v.alt}</span>
+                            {/* Rich Tooltip on Hover */}
+                            <div className="fixed sm:absolute bottom-auto sm:bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-slate-900 text-white rounded-xl text-[10px] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 shadow-xl border border-white/10 hidden group-hover:block">
+                              <div className="font-black uppercase text-indigo-400 mb-1">Variant Details</div>
+                              <div>Effect: <span className="text-slate-300">{(v.effect || 'unknown').replace('_', ' ')}</span></div>
+                              <div>Genotype: <span className="text-slate-300">{v.genotype || 'N/A'}</span></div>
+                              <div>Location: <span className="text-slate-300">{v.chromosome}:{v.position}</span></div>
+                              <div>Activity Score: <span className="text-slate-300">{v.activity_score !== undefined ? v.activity_score.toFixed(1) : '1.0'}</span></div>
+                              <div className="mt-1 flex gap-1">
+                                <span className="bg-white/10 px-1 rounded">{v.ref}</span>
+                                <span className="text-indigo-400">→</span>
+                                <span className="bg-teal-500/30 px-1 rounded">{v.alt}</span>
+                              </div>
                             </div>
                           </div>
+                        ))
+                      ) : (
+                        <div className="text-[12px] text-slate-400 italic bg-slate-50 border border-dashed border-slate-200 rounded-xl px-4 py-3 w-full text-center">
+                          No high-impact variants detected for {result.pharmacogenomic_profile.primary_gene}
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-[12px] text-slate-400 italic bg-slate-50 border border-dashed border-slate-200 rounded-xl px-4 py-3 w-full text-center">
-                        No high-impact variants detected for {result.pharmacogenomic_profile.primary_gene}
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
