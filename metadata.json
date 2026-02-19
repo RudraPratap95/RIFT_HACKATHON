@@ -1,0 +1,5 @@
+{
+  "name": "RIFT 2026 - Money Mule Detector",
+  "description": "A financial forensics platform using graph theory to detect money laundering rings, smurfing patterns, and shell accounts.",
+  "requestFramePermissions": []
+}
