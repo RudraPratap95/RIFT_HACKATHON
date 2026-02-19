@@ -6,44 +6,53 @@ export interface RiskAssessment {
 
 export interface DetectedVariant {
   rsid: string;
-  gene?: string;
+  gene: string;
   star_allele?: string;
+  effect?: string;
   zygosity?: string;
-  functional_impact?: string;
+  chromosome?: string;
+  position?: number;
+  ref?: string;
+  alt?: string;
   genotype?: string;
-  impact?: string;
+  activity_score?: number;
 }
 
 export interface PharmacogenomicProfile {
   primary_gene: string;
   diplotype: string;
   phenotype: "PM" | "IM" | "NM" | "RM" | "URM" | "Unknown";
+  phenotype_description?: string;
   detected_variants: DetectedVariant[];
 }
 
 export interface ClinicalRecommendation {
-  action?: string;
-  alternative_drugs?: string[];
-  cpic_guideline?: string;
-  dosing_guidance?: string;
-  monitoring_requirements?: string;
+  action: string;
+  dose_modifier?: number;
+  cpic_level?: string;
+  alternative_drugs: string[];
+  monitoring_parameters?: string[];
 }
 
 export interface LLMExplanation {
   summary: string;
-  mechanism?: string;
-  biological_mechanism?: string;
-  clinical_implications?: string;
-  citations?: string[];
+  mechanism: string;
+  variant_significance?: string;
+  clinical_implication?: string;
+  population_context?: string;
+  risk_rationale?: string;
+  alternatives_note?: string;
+  generated_by?: string;
 }
 
 export interface QualityMetrics {
   vcf_parsing_success: boolean;
-  variants_detected?: number;
-  variants_found_count?: number;
-  genes_covered?: string[];
-  gene_coverage?: string;
-  confidence_basis?: string;
+  vcf_version?: string;
+  total_variants_parsed: number;
+  pharmacogenomic_variants_found: number;
+  genes_analyzed: string[];
+  parsing_errors: string[];
+  analysis_id: string;
 }
 
 export interface AnalysisResult {

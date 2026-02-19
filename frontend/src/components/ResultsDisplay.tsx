@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { AnalysisResult } from '../types';
-import { AlertTriangle, CheckCircle, XCircle, AlertOctagon, Info, FileJson, Copy, ChevronDown, ChevronUp, Beaker, ExternalLink, Download } from 'lucide-react';
+import {
+  AlertTriangle, CheckCircle, XCircle, AlertOctagon, Info,
+  FileJson, Copy, ChevronDown, ChevronUp, Beaker,
+  ExternalLink, Download, Dna, Activity, Users, Shield, Zap
+} from 'lucide-react';
 
 interface ResultsDisplayProps {
   result: AnalysisResult;
@@ -46,10 +50,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
               <div className="bg-teal-500 p-3 rounded-xl shadow-lg shadow-teal-500/20">
                 <Beaker className="w-6 h-6 text-white" />
               </div>
-              <div>
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight text-left">
+              <div className="text-left">
+                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
                   {result.drug}
-                  <span className="ml-2 text-slate-400 font-medium text-lg italic">Analysis Report</span>
+                  <span className="ml-2 text-slate-400 font-medium text-lg italic">Clinical Analysis</span>
                 </h2>
                 <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
                   <span className="bg-slate-100 px-2 py-0.5 rounded font-mono text-[10px] uppercase font-bold tracking-tight">{result.patient_id}</span>
@@ -63,7 +67,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
               <div className="p-2 bg-white rounded-full shadow-inner animate-pulse">
                 {getRiskIcon(result.risk_assessment.severity)}
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col text-left">
                 <span className="text-[10px] uppercase font-black tracking-widest opacity-60">Risk Result</span>
                 <span className="text-xl font-black leading-none uppercase tracking-tight">{result.risk_assessment.risk_label}</span>
               </div>
@@ -80,26 +84,56 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
               </div>
               <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Clinical Action</h3>
             </div>
-            <div className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm ring-1 ring-slate-100/50 h-full">
-              <p className="text-slate-900 font-semibold text-lg leading-snug">
-                {result.clinical_recommendation.action}
-              </p>
-              {result.clinical_recommendation.alternative_drugs && result.clinical_recommendation.alternative_drugs.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-2">
-                  <span className="text-[10px] font-black text-slate-400 uppercase w-full mb-1 tracking-tight">Recommended Alternatives</span>
-                  {result.clinical_recommendation.alternative_drugs.map((alt, i) => (
-                    <span key={i} className="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-bold border border-teal-100 italic">
-                      {alt}
+            <div className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm ring-1 ring-slate-100/50 h-full flex flex-col justify-between">
+              <div>
+                <p className="text-slate-900 font-semibold text-lg leading-snug text-left">
+                  {result.clinical_recommendation.action}
+                </p>
+                {result.clinical_recommendation.dose_modifier !== undefined && (
+                  <div className="mt-3 inline-flex items-center gap-2 bg-slate-900 text-white px-3 py-1 rounded-full text-xs font-black">
+                    <Zap className="w-3 h-3 text-teal-400" />
+                    DOSE MODIFIER: {(result.clinical_recommendation.dose_modifier * 100).toFixed(0)}%
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 space-y-4">
+                {result.clinical_recommendation.alternative_drugs && result.clinical_recommendation.alternative_drugs.length > 0 && (
+                  <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-2">
+                    <span className="text-[10px] font-black text-slate-400 uppercase w-full mb-1 tracking-tight text-left">Recommended Alternatives</span>
+                    {result.clinical_recommendation.alternative_drugs.map((alt, i) => (
+                      <span key={i} className="bg-teal-50 text-teal-700 px-3 py-1 rounded-full text-xs font-bold border border-teal-100 italic">
+                        {alt}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {result.clinical_recommendation.monitoring_parameters && result.clinical_recommendation.monitoring_parameters.length > 0 && (
+                  <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-2 text-left">
+                    <span className="text-[10px] font-black text-slate-400 uppercase w-full mb-1 tracking-tight">Clinical Monitoring</span>
+                    <div className="flex flex-wrap gap-2">
+                      {result.clinical_recommendation.monitoring_parameters.map((param, i) => (
+                        <span key={i} className="bg-slate-50 text-slate-600 px-2 py-0.5 rounded border border-slate-200 text-[11px] font-medium">
+                          {param}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {result.clinical_recommendation.cpic_level && (
+                  <div className="pt-2 flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-[10px] text-teal-600 font-bold uppercase tracking-wider bg-teal-50/50 w-fit px-2 py-0.5 rounded border border-teal-100">
+                      <Shield className="w-3 h-3" />
+                      CPIC LEVEL {result.clinical_recommendation.cpic_level}
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      ID: {result.quality_metrics.analysis_id.slice(0, 8).toUpperCase()}
                     </span>
-                  ))}
-                </div>
-              )}
-              {result.clinical_recommendation.cpic_guideline && (
-                <div className="mt-4 flex items-center gap-1.5 text-[10px] text-teal-600 font-bold uppercase tracking-wider bg-teal-50/50 w-fit px-2 py-0.5 rounded border border-teal-100">
-                  <ExternalLink className="w-3 h-3" />
-                  {result.clinical_recommendation.cpic_guideline}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -107,13 +141,13 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="bg-indigo-100 p-1.5 rounded-lg">
-                <Dna className="w-4 h-4 text-indigo-600" />
+                <DnaIcon className="w-4 h-4 text-indigo-600" />
               </div>
               <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Genomic Profile</h3>
             </div>
             <div className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm ring-1 ring-slate-100/50 h-full">
               <div className="grid grid-cols-2 gap-6">
-                <div>
+                <div className="text-left">
                   <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Target Gene</p>
                   <p className="text-2xl font-black text-indigo-900 leading-tight flex items-baseline gap-1">
                     {result.pharmacogenomic_profile.primary_gene}
@@ -122,25 +156,47 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
                     </span>
                   </p>
                 </div>
-                <div>
+                <div className="text-left">
                   <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Phenotype</p>
                   <p className="text-2xl font-black text-indigo-900 truncate" title={result.pharmacogenomic_profile.phenotype}>
                     {result.pharmacogenomic_profile.phenotype}
                   </p>
                 </div>
-                <div className="col-span-2">
-                  <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-3">Detected Variants</p>
+
+                <div className="col-span-2 text-left">
+                  <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-1.5">Impact Analysis</p>
+                  <p className="text-[12px] font-medium text-indigo-700/80 leading-snug">
+                    {result.pharmacogenomic_profile.phenotype_description}
+                  </p>
+                </div>
+
+                <div className="col-span-2 text-left">
+                  <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest mb-3">Detected Primary Variants</p>
                   <div className="flex flex-wrap gap-2">
                     {result.pharmacogenomic_profile.detected_variants.length > 0 ? (
                       result.pharmacogenomic_profile.detected_variants.map((v, idx) => (
                         <div key={idx} className="group relative bg-white border border-indigo-100 text-indigo-600 px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-sm hover:ring-2 hover:ring-indigo-400 transition-all cursor-default">
                           <span className="text-indigo-400 mr-1">rs</span>{v.rsid.replace('rs', '')}
                           {v.star_allele && <span className="ml-2 bg-indigo-600 text-white px-1.5 py-0.5 rounded text-[9px] uppercase font-black">{v.star_allele}</span>}
+
+                          {/* Rich Tooltip on Hover */}
+                          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-slate-900 text-white rounded-xl text-[10px] opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-10 shadow-xl border border-white/10">
+                            <div className="font-black uppercase text-indigo-400 mb-1">Variant Details</div>
+                            <div>Effect: <span className="text-slate-300">{(v.effect || 'unknown').replace('_', ' ')}</span></div>
+                            <div>Genotype: <span className="text-slate-300">{v.genotype || 'N/A'}</span></div>
+                            <div>Location: <span className="text-slate-300">{v.chromosome}:{v.position}</span></div>
+                            <div>Activity Score: <span className="text-slate-300">{v.activity_score !== undefined ? v.activity_score.toFixed(1) : '1.0'}</span></div>
+                            <div className="mt-1 flex gap-1">
+                              <span className="bg-white/10 px-1 rounded">{v.ref}</span>
+                              <span className="text-indigo-400">→</span>
+                              <span className="bg-teal-500/30 px-1 rounded">{v.alt}</span>
+                            </div>
+                          </div>
                         </div>
                       ))
                     ) : (
                       <div className="text-[12px] text-slate-400 italic bg-slate-50 border border-dashed border-slate-200 rounded-xl px-4 py-3 w-full text-center">
-                        No high-impact variants detected
+                        No high-impact variants detected for {result.pharmacogenomic_profile.primary_gene}
                       </div>
                     )}
                   </div>
@@ -163,42 +219,69 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
             </div>
             Clinical Insights & Biological Mechanism
           </span>
-          <div className="bg-slate-200/50 p-1 rounded-full">
-            {showDetails ? <ChevronUp className="w-5 h-5 text-slate-600" /> : <ChevronDown className="w-5 h-5 text-slate-600" />}
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-black text-slate-400 uppercase bg-white/50 px-2 py-0.5 rounded border">
+              Engine: {result.llm_generated_explanation.generated_by || 'Rule-Based'}
+            </span>
+            <div className="bg-slate-200/50 p-1 rounded-full">
+              {showDetails ? <ChevronUp className="w-5 h-5 text-slate-600" /> : <ChevronDown className="w-5 h-5 text-slate-600" />}
+            </div>
           </div>
         </button>
 
         {showDetails && (
-          <div className="p-8 border-t border-white/20 grid grid-cols-1 md:grid-cols-3 gap-8 text-left bg-white/10">
+          <div className="p-8 border-t border-white/20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left bg-white/10">
             <div className="relative pl-6 border-l-4 border-teal-500">
-              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Clinical Summary</h4>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Activity className="w-3 h-3 text-teal-500" /> Patient Summary
+              </h4>
               <p className="text-slate-700 leading-relaxed text-sm font-medium">{result.llm_generated_explanation.summary}</p>
             </div>
+
             <div className="relative pl-6 border-l-4 border-blue-500">
-              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Molecular Mechanism</h4>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <DnaIcon className="w-3 h-3 text-blue-500" /> Molecular Mechanism
+              </h4>
               <p className="text-slate-700 leading-relaxed text-sm font-medium">
                 {result.llm_generated_explanation.mechanism}
               </p>
             </div>
+
             <div className="relative pl-6 border-l-4 border-amber-500">
-              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Implications</h4>
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <AlertTriangle className="w-3 h-3 text-amber-500" /> Clinical Implication
+              </h4>
               <p className="text-slate-700 leading-relaxed text-sm font-medium">
-                {result.llm_generated_explanation.clinical_implications}
+                {result.llm_generated_explanation.clinical_implication}
               </p>
             </div>
 
-            {result.llm_generated_explanation.citations && result.llm_generated_explanation.citations.length > 0 && (
-              <div className="col-span-full pt-6 border-t border-slate-100 flex items-start gap-4">
-                <span className="text-[10px] font-black text-slate-300 uppercase rotate-90 origin-left translate-y-6">Citations</span>
-                <div className="flex flex-wrap gap-3">
-                  {result.llm_generated_explanation.citations.map((cite, i) => (
-                    <span key={i} className="text-[11px] font-bold text-slate-500 bg-slate-100/50 px-3 py-1 rounded-lg border border-slate-200">
-                      [{i + 1}] {cite}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            <div className="relative pl-6 border-l-4 border-indigo-500">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Zap className="w-3 h-3 text-indigo-500" /> Variant Significance
+              </h4>
+              <p className="text-slate-700 leading-relaxed text-sm font-medium">
+                {result.llm_generated_explanation.variant_significance}
+              </p>
+            </div>
+
+            <div className="relative pl-6 border-l-4 border-slate-500">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Users className="w-3 h-3 text-slate-500" /> Population Context
+              </h4>
+              <p className="text-slate-700 leading-relaxed text-sm font-medium">
+                {result.llm_generated_explanation.population_context}
+              </p>
+            </div>
+
+            <div className="relative pl-6 border-l-4 border-rose-500 bg-rose-50/10 p-4 rounded-r-xl">
+              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Shield className="w-3 h-3 text-rose-500" /> Risk Rationale
+              </h4>
+              <p className="text-slate-700 leading-relaxed text-sm font-medium italic">
+                {result.llm_generated_explanation.risk_rationale}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -211,10 +294,10 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
         >
           <span className="font-bold text-slate-300 flex items-center gap-3">
             <FileJson className="w-5 h-5 text-teal-500" />
-            Machine-Readable Output
+            Bioinformatics Payload (v1.1)
           </span>
           <div className="flex items-center gap-4">
-            <span className="text-[11px] font-bold text-slate-500 bg-slate-900 px-3 py-1 rounded-xl border border-slate-700 group-hover:border-teal-500 transition-colors">SCHEMA v4.2</span>
+            <span className="text-[11px] font-bold text-slate-500 bg-slate-900 px-3 py-1 rounded-xl border border-slate-700 group-hover:border-teal-500 transition-colors">SCHEMA: GENOMIC_INTEROP_v4.2</span>
             <div className="bg-slate-700/50 p-1 rounded-full">
               {showJson ? <ChevronUp className="w-5 h-5 text-teal-400" /> : <ChevronDown className="w-5 h-5 text-teal-400" />}
             </div>
@@ -256,7 +339,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
   );
 };
 
-function Dna({ className }: { className?: string }) {
+function DnaIcon({ className }: { className?: string }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
       <path d="M2 15c6.667-6 13.333 0 20-6" />

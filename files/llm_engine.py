@@ -7,7 +7,8 @@ Falls back gracefully if API keys are not set.
 import os
 import json
 import httpx
-from typing import Optional, Dict, List
+from typing import Optional
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # LLM CLIENT FACTORY
@@ -253,30 +254,16 @@ async def generate_clinical_explanation(
     # Try Gemini first
     if GEMINI_API_KEY:
         try:
-            # We use httpx directly for better async control and error handling
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-            payload = {
-                "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {
-                    "temperature": 0.3,
-                    "maxOutputTokens": 1024,
-                    "responseMimeType": "application/json",
-                }
-            }
-            async with httpx.AsyncClient(timeout=30) as client:
-                resp = await client.post(url, json=payload)
-                if resp.status_code == 200:
-                    data = resp.json()
-                    raw = data["candidates"][0]["content"]["parts"][0]["text"]
-                    # Clean JSON if wrapped in markdown
-                    raw = raw.strip()
-                    if raw.startswith("```"):
-                        raw = raw.split("```")[1]
-                        if raw.startswith("json"):
-                            raw = raw[4:]
-                    parsed = json.loads(raw)
-                    parsed["generated_by"] = "gemini-1.5-flash"
-                    return parsed
+            raw = await call_gemini(prompt)
+            # Clean JSON if wrapped in markdown
+            raw = raw.strip()
+            if raw.startswith("```"):
+                raw = raw.split("```")[1]
+                if raw.startswith("json"):
+                    raw = raw[4:]
+            parsed = json.loads(raw)
+            parsed["generated_by"] = "gemini-1.5-flash"
+            return parsed
         except Exception as e:
             print(f"[LLM] Gemini failed: {e}. Trying Groq...")
 

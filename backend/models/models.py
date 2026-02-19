@@ -28,8 +28,14 @@ class DetectedVariant(BaseModel):
     rsid: str
     gene: str
     star_allele: Optional[str] = None
+    effect: Optional[str] = None
     zygosity: Optional[str] = None
-    functional_impact: Optional[str] = None
+    chromosome: Optional[str] = None
+    position: Optional[int] = None
+    ref: Optional[str] = None
+    alt: Optional[str] = None
+    genotype: Optional[str] = None
+    activity_score: Optional[float] = None
 
 class RiskAssessment(BaseModel):
     risk_label: RiskLabel
@@ -40,24 +46,34 @@ class PharmacogenomicProfile(BaseModel):
     primary_gene: str
     diplotype: str
     phenotype: Phenotype
+    phenotype_description: Optional[str] = None
     detected_variants: List[DetectedVariant]
 
 class ClinicalRecommendation(BaseModel):
     action: str
+    dose_modifier: Optional[float] = None
+    cpic_level: Optional[str] = None
     alternative_drugs: List[str]
-    cpic_guideline: str
+    monitoring_parameters: Optional[List[str]] = None
 
 class LLMExplanation(BaseModel):
     summary: str
     mechanism: str
-    clinical_implications: str
-    citations: Optional[List[str]] = None
+    variant_significance: Optional[str] = None
+    clinical_implication: Optional[str] = None
+    population_context: Optional[str] = None
+    risk_rationale: Optional[str] = None
+    alternatives_note: Optional[str] = None
+    generated_by: Optional[str] = None
 
 class QualityMetrics(BaseModel):
     vcf_parsing_success: bool
-    variants_detected: int
-    genes_covered: Optional[List[str]] = None
-    confidence_basis: Optional[str] = None
+    vcf_version: Optional[str] = None
+    total_variants_parsed: int
+    pharmacogenomic_variants_found: int
+    genes_analyzed: List[str]
+    parsing_errors: List[str]
+    analysis_id: str
 
 class AnalysisResult(BaseModel):
     patient_id: str

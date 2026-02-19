@@ -35,7 +35,8 @@ Build an AI-powered system that:
 - **6 Critical Genes Analyzed** — CYP2D6, CYP2C19, CYP2C9, SLCO1B1, TPMT, DPYD
 - **6 Drug Risk Predictions** — CODEINE, WARFARIN, CLOPIDOGREL, SIMVASTATIN, AZATHIOPRINE, FLUOROURACIL
 - **5 Risk Labels** — Safe · Adjust Dosage · Toxic · Ineffective · Unknown
-- **LLM-Generated Explanations** — Clinical summaries with specific variant citations and biological mechanisms
+- **LLM-Generated Explanations** — Clinical summaries with biological mechanisms powered by Gemini 1.5 Flash (with Groq/Llama-3 fallback)
+- **Professional PDF Reports** — Automated generation of clinical-grade PDF reports with risk visualization
 - **CPIC-Aligned Recommendations** — Dosing guidance matched to PharmGKB / CPIC guidelines
 - **Structured JSON Output** — Downloadable, schema-compliant results
 - **Color-Coded UI** — Green / Yellow / Red risk visualization
@@ -87,8 +88,8 @@ To win in a 10-hour sprint, we divide responsibilities to avoid overlap and maxi
 |-------|------------|
 | **Frontend** | React 19 + Tailwind CSS + Lucide Icons |
 | **Backend** | FastAPI (Python 3.10+) |
-| **AI/LLM** | OpenAI API (GPT-4o or ChatGPT-3.5) |
-| **Parsing** | Custom Python VCF Stream Parser |
+| **AI/LLM** | Google Gemini 1.5 Flash (Primary) + Groq Llama-3 (Fallback) |
+| **Parsing** | Advanced Python VCF Stream Parser (30+ Variants) |
 | **Deployment**| Vercel (Frontend) + Render/Railway (Backend) |
 
 ---
@@ -102,8 +103,9 @@ PHARMA_GUARD/
 │   ├── requirements.txt    # Python dependencies
 │   ├── .env                # OpenAI API Key
 │   ├── services/           
-│   │   ├── genetics_logic.py # VCF parsing & Risk rules (Person 1)
-│   │   └── llm_service.py    # LLM Clinical explanations (Person 2)
+│   │   ├── vcf_parser.py   # Robust VCF parsing & Gene mapping
+│   │   ├── risk_engine.py  # CPIC-aligned risk assessment engine
+│   │   └── llm_service.py  # Multi-client LLM Clinical explanations
 │   └── models/             # Pydantic models for JSON schema (Person 3)
 ├── frontend/               # Vite + React Application (Person 4)
 │   ├── src/
@@ -214,7 +216,7 @@ Follow these rules to ensure a high evaluation score:
 1. **Navigate to backend:** `cd backend`
 2. **Setup Virtual Env:** `python -m venv venv` and `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
 3. **Install dependencies:** `pip install -r requirements.txt`
-4. **Environment:** Create a `.env` file with `OPENAI_API_KEY`.
+4. **Environment:** Create a `.env` file with `GEMINI_API_KEY` and `GROQ_API_KEY`.
 5. **Run:** `uvicorn main:app --reload`
 
 ### 💻 Frontend (React + Vite)
