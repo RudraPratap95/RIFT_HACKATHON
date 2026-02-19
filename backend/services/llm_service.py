@@ -8,6 +8,10 @@ import os
 import json
 import httpx
 from typing import Optional, Dict, List
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ─────────────────────────────────────────────────────────────────────────────
 # LLM CLIENT FACTORY
@@ -297,3 +301,83 @@ async def generate_clinical_explanation(
         action=action, severity=severity, alternatives=alternatives,
     )
     return result
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CHATBOT LOGIC
+# ─────────────────────────────────────────────────────────────────────────────
+
+def build_chat_prompt(query: str, context: List[dict]) -> str:
+    context_text = ""
+    for res in context:
+        context_text += f"""
+---
+DRUG: {res.get('drug')}
+RISK: {res.get('risk_assessment', {}).get('risk_label')}
+PHENOTYPE: {res.get('pharmacogenomic_profile', {}).get('phenotype')}
+GENE: {res.get('pharmacogenomic_profile', {}).get('primary_gene')}
+EXPLANATION: {res.get('llm_generated_explanation', {}).get('summary')}
+RECOMMENDATION: {res.get('clinical_recommendation', {}).get('action')}
+---
+"""
+    
+    return f"""You are 'PharmaGuard AI', a clinical pharmacogenomics assistant. 
+A patient has just received their genetic test results and is asking you a follow-up question.
+
+PATIENT'S GENOMIC CONTEXT:
+{context_text}
+
+USER QUESTION:
+"{query}"
+
+RULES:
+1. Use ONLY the provided genomic context to answer. If the answer isn't in the context, say you don't have that specific data but explain the general principle.
+2. Be empathetic but professional and clinically focused.
+3. ALWAYS include this disclaimer: "I am an AI assistant. Consult your prescribing physician or a certified genetic counselor before making any changes to your medication."
+4. Provide exactly 3 short suggested follow-up questions that would be helpful for this specific patient.
+5. Return ONLY a JSON object with keys: "response" (string) and "suggested_follow_ups" (list of strings).
+
+RESPONSE FORMAT:
+{{
+  "response": "Your medical answer here...",
+  "suggested_follow_ups": ["Q1?", "Q2?", "Q3?"]
+}}"""
+
+async def generate_chat_response(query: str, context: List[dict]) -> dict:
+    """Generate a contextual response for the medical chatbot."""
+    prompt = build_chat_prompt(query, context)
+    
+    # Try Gemini
+    if GEMINI_API_KEY:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+            payload = {
+                "contents": [{"parts": [{"text": prompt}]}],
+                "generationConfig": {
+                    "temperature": 0.5,
+                    "maxOutputTokens": 1024,
+                    "responseMimeType": "application/json",
+                }
+            }
+            async with httpx.AsyncClient(timeout=30) as client:
+                resp = await client.post(url, json=payload)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    raw = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                    # Clean potential markdown
+                    if raw.startswith("```"):
+                        raw = raw.split("```")[1]
+                        if raw.startswith("json"): raw = raw[4:]
+                    return json.loads(raw)
+        except Exception as e:
+            print(f"[CHAT] Gemini failed: {e}")
+
+    # Fallback to a safe general response
+    return {
+        "response": "I'm sorry, I am currently having trouble connecting to my clinical intelligence base. Please review the 'Clinical Insights' section in your report or consult your physician for detailed follow-up. \n\nDisclaimer: Always consult a healthcare professional before changing medications.",
+        "suggested_follow_ups": [
+            "What should I tell my doctor about these results?",
+            "What is a CYP2D6 metabolizer?",
+            "Are there alternative drugs I can take?"
+        ]
+    }

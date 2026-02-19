@@ -4,6 +4,8 @@ import { FileUpload } from './components/FileUpload';
 import { DrugInput } from './components/DrugInput';
 import { Dashboard } from './components/Dashboard';
 import { ResultsDisplay } from './components/ResultsDisplay';
+import { GenomeChat } from './components/GenomeChat';
+import { AnalysisLoader } from './components/AnalysisLoader';
 import { useAnalysis } from './hooks/useAnalysis';
 import { generatePDFReport, exportJSON } from './utils/exportUtils';
 import {
@@ -66,20 +68,29 @@ const App: React.FC = () => {
     }
   };
 
+  const handleFileChange = (newFile: File | null) => {
+    setFile(newFile);
+    if (!newFile) {
+      // Reset targets when file is removed
+      setPatientId('');
+      setDrug('');
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-900">
       <Header currentView={view} setCurrentView={setView} />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 space-y-8 md:space-y-12 overflow-x-hidden">
         {view === 'analysis' ? (
           <>
             {/* Intro / Hero Section */}
-            <div className="text-center max-w-3xl mx-auto space-y-6 animate-fade-in">
+            <div className="text-center max-w-3xl mx-auto space-y-4 md:space-y-6 animate-fade-in">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-[10px] font-black uppercase tracking-widest shadow-sm">
                 <Sparkles className="w-3 h-3" />
                 Vanguard Pharmacogenomics v1.1
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95] md:leading-[0.9]">
                 Precision Medicine <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-indigo-600">Powered by AI</span>
               </h1>
@@ -115,7 +126,7 @@ const App: React.FC = () => {
 
                     <FileUpload
                       file={file}
-                      setFile={setFile}
+                      setFile={handleFileChange}
                       error={fileError}
                       setError={setFileError}
                     />
@@ -148,23 +159,7 @@ const App: React.FC = () => {
                       )}
                     </button>
 
-                    {loading && (
-                      <div className="space-y-3 animate-pulse">
-                        <div className="flex justify-between items-end">
-                          <span className="text-[10px] font-black text-teal-600 uppercase tracking-widest">Global Progress</span>
-                          <span className="text-[10px] font-bold text-slate-400">{Math.round(((loadingStep + 1) / STEPS.length) * 100)}%</span>
-                        </div>
-                        <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-teal-500 transition-all duration-500"
-                            style={{ width: `${((loadingStep + 1) / STEPS.length) * 100}%` }}
-                          ></div>
-                        </div>
-                        <p className="text-[11px] font-bold text-slate-500 text-center italic">
-                          {STEPS[loadingStep]}
-                        </p>
-                      </div>
-                    )}
+                    {/* Loader Removed from Inline Flow */}
 
                     {error && (
                       <div className="p-4 bg-rose-50 text-rose-700 text-[13px] font-bold rounded-2xl border border-rose-100 flex items-start gap-3">
@@ -205,31 +200,31 @@ const App: React.FC = () => {
               <div className="lg:col-span-8 space-y-8">
                 {results ? (
                   <>
-                    <div className="flex justify-between items-center glass-card p-5 rounded-2xl border border-white/50 animate-fade-in shadow-lg">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 glass-card p-4 sm:p-5 rounded-3xl border border-white/50 animate-fade-in shadow-xl shadow-slate-200/50">
                       <div className="flex items-center gap-3">
-                        <div className="bg-slate-950 text-white px-3 py-1 rounded-xl text-xs font-black">
+                        <div className="bg-slate-950 text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-lg">
                           {results.length}
                         </div>
-                        <h3 className="text-lg font-black text-slate-900 tracking-tight">Identified Risk Profiles</h3>
+                        <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Identified Risk Profiles</h3>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                         <button
                           onClick={handleExportPDF}
-                          className="flex items-center gap-2 text-[12px] font-black text-white bg-teal-600 hover:bg-teal-700 transition-all px-4 py-2 rounded-xl shadow-lg shadow-teal-600/20"
+                          className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 text-[11px] font-black text-white bg-teal-600 hover:bg-teal-700 transition-all px-5 py-2.5 rounded-xl shadow-lg shadow-teal-600/20 active:scale-95"
                         >
                           <FileText className="w-4 h-4" />
                           PDF REPORT
                         </button>
                         <button
                           onClick={handleExportJSON}
-                          className="flex items-center gap-2 text-[12px] font-black text-slate-600 hover:text-slate-900 transition-colors bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl border border-slate-200"
+                          className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 text-[11px] font-black text-slate-600 hover:text-slate-900 transition-colors bg-white hover:bg-slate-50 px-5 py-2.5 rounded-xl border border-slate-200 active:scale-95"
                         >
                           <FileJson className="w-4 h-4" />
-                          DATA BUNDLE
+                          JSON REPORT
                         </button>
                         <button
                           onClick={handleNewAnalysis}
-                          className="p-2 text-slate-400 hover:text-rose-600 transition-colors"
+                          className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all ml-auto sm:ml-0 active:rotate-180 duration-500"
                           title="New Analysis"
                         >
                           <RefreshCcw className="w-5 h-5" />
@@ -267,6 +262,8 @@ const App: React.FC = () => {
         )}
       </main>
 
+      {results && <GenomeChat analysisResults={results} />}
+
       <footer className="bg-white/30 backdrop-blur-md border-t border-white/20 py-10 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center space-y-4">
           <div className="flex justify-center gap-6 text-slate-400 grayscale hover:grayscale-0 transition-all opacity-50">
@@ -279,6 +276,18 @@ const App: React.FC = () => {
           </p>
         </div>
       </footer>
+
+      {/* Analysis Overlay Loader */}
+      {loading && (
+        <div className="fixed inset-0 z-[150] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white/95 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-white/40">
+            <div className="relative">
+              {/* Optional: Close/Cancel could go here, but usually locking is safer for async */}
+              <AnalysisLoader currentStep={loadingStep} steps={STEPS} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

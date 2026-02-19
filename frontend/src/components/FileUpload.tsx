@@ -2,8 +2,9 @@ import React, { useCallback } from 'react';
 import { UploadCloud, FileText, X, AlertCircle } from 'lucide-react';
 
 const validateVCF = (file: File): string | null => {
-  if (!file.name.toLowerCase().endsWith('.vcf')) {
-    return "Please upload a valid .vcf file.";
+  const fileName = file.name.toLowerCase();
+  if (!fileName.endsWith('.vcf') && !fileName.endsWith('.vcf.gz')) {
+    return "Invalid format. I can only analyze .vcf or .vcf.gz files.";
   }
   if (file.size > 5 * 1024 * 1024) {
     return "File size exceeds the 5MB limit.";

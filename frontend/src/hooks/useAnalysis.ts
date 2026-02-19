@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export function useAnalysis() {
   const [loading, setLoading] = useState(false);
@@ -18,19 +18,23 @@ export function useAnalysis() {
     'Compiling final report...',
   ];
 
+  const stepRef = useRef(0);
+
   const analyze = useCallback(async ({ vcfFile, drugs, patientId }: { vcfFile: File, drugs: string, patientId?: string }) => {
     setLoading(true);
     setError(null);
     setResults(null);
     setLoadingStep(0);
+    stepRef.current = 0;
 
     // Simulate loading steps for UX
     const stepInterval = setInterval(() => {
       setLoadingStep(prev => {
-        if (prev < STEPS.length - 1) return prev + 1;
-        return prev;
+        const next = prev < STEPS.length - 1 ? prev + 1 : prev;
+        stepRef.current = next;
+        return next;
       });
-    }, 800);
+    }, 800); // Slower initial pace for realism
 
     try {
       const formData = new FormData();
@@ -38,13 +42,13 @@ export function useAnalysis() {
       formData.append('drugs', drugs);
       if (patientId) formData.append('patient_id', patientId);
 
+      // Analyze Request
       const response = await fetch(`${API_BASE}/analyze`, {
         method: 'POST',
         body: formData,
       });
 
       clearInterval(stepInterval);
-      setLoadingStep(STEPS.length - 1);
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
@@ -53,12 +57,38 @@ export function useAnalysis() {
 
       const data = await response.json();
 
+      // FAST-FORWARD LOGIC:
+      // Rapidly tick through remaining steps to show "completion"
+      const startIdx = stepRef.current + 1;
+      for (let i = startIdx; i < STEPS.length; i++) {
+        setLoadingStep(i);
+        // "Tick" speed - fast but perceptible
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+
+      // Small pause at 100% before showing results
+      await new Promise(resolve => setTimeout(resolve, 50));
+
       // The backend returns a list of results
       setResults(data);
       return data;
     } catch (err: any) {
       clearInterval(stepInterval);
-      setError(err.message || 'Analysis failed. Please check the VCF file and try again.');
+
+      let friendlyError = err.message;
+
+      // Map common technical errors to user-friendly messages
+      if (err.message.includes('404')) {
+        friendlyError = "Analysis service unreachable. Please ensure the backend is running.";
+      } else if (err.message.includes('500')) {
+        friendlyError = "The VCF file could not be parsed. It may be corrupted or use a non-standard format.";
+      } else if (err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
+        friendlyError = "Connection failed. Please check your internet or local server.";
+      } else if (err.message.includes('Missing columns')) {
+        friendlyError = "Invalid VCF structure. Missing required columns (CHROM, POS, ID, REF, ALT).";
+      }
+
+      setError(friendlyError);
       throw err;
     } finally {
       setLoading(false);

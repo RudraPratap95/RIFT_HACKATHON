@@ -315,6 +315,11 @@ def parse_vcf(file_content: str) -> ParseResult:
     # Build per-gene profiles
     gene_profiles = build_gene_profiles(pharmaco_variants)
 
+    # Strict v4.2 check (Requirement #1)
+    is_v42 = "4.2" in vcf_version
+    if not is_v42:
+        errors.append(f"Unsupported VCF version: {vcf_version}. Only v4.2 is officially supported.")
+
     return ParseResult(
         patient_id=patient_id,
         sample_count=max(sample_count, 1),
@@ -323,7 +328,7 @@ def parse_vcf(file_content: str) -> ParseResult:
         gene_profiles=gene_profiles,
         parsing_errors=errors,
         vcf_version=vcf_version,
-        success=total_variants > 0,
+        success=total_variants > 0 and is_v42,
     )
 
 

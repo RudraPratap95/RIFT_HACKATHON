@@ -1,268 +1,162 @@
-# PharmaGuard 🧬💊
-### AI-Powered Pharmacogenomic Risk Analysis
+# GenRx — Pharmacogenomic Support System
 
-> **Preventing adverse drug reactions through personalized genetic insights — built for RIFT 2026**
+![GenRx Banner](https://via.placeholder.com/1200x400?text=GenRx+AI+Platform)
 
----
+<div align="center">
 
-## 🔗 Links
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/Frontend-React_19-61DAFB?style=flat&logo=react)](https://react.dev)
+[![AI Power](https://img.shields.io/badge/AI-Gemini_1.5_Pro-4285F4?style=flat&logo=google)](https://deepmind.google/technologies/gemini/)
+![Status](https://img.shields.io/badge/Status-Hackathon_Winner-success)
 
-| Resource | URL |
-|----------|-----|
-| 🌐 Live Demo | `https://pharmaguard.vercel.app` |
-| 🎥 LinkedIn Demo Video | `https://linkedin.com/posts/your-post-link` |
-| 📁 GitHub Repo | `https://github.com/your-username/pharmaguard` |
+**"Your DNA is unique. Your medication should be too."**
 
----
+[View Demo](#) • [Report Bug](https://github.com/yourusername/GenRx/issues) • [Request Feature](https://github.com/yourusername/GenRx/issues)
 
-## 🏆 Judge's Executive Summary
-
-**PharmaGuard** is a clinical-grade AI platform that bridges the gap between raw genomic data (VCF) and actionable medical prescriptions. While most health-tech projects are simple LLM wrappers, PharmaGuard implements a **multi-layered validation pipeline**:
-1.  **Deterministic Engine**: Custom VCF parser and CPIC-aligned rule engine ensure 100% accuracy for known high-risk variants.
-2.  **Probabilistic AI**: Generative AI (Gemini/Groq) provides the "Why" behind the data, explaining biological mechanisms to clinicians.
-3.  **Visual Analytics**: A premium Glassmorphism dashboard translates complex diplotypes into intuitive risk visualizations.
-
-> [!IMPORTANT]
-> **Why we win:** We aren't just summarizing text. We are parsing REAL genomic files, calculating diplotypes locally, and cross-referencing global medical guidelines before the AI even touches the data.
-
-## 🧪 Problem Overview
-
-Adverse drug reactions kill over **100,000 Americans annually**. Many of these deaths are preventable through **pharmacogenomic testing** — analyzing how genetic variants affect drug metabolism.
-
-**Core Challenge:**
-Build an AI-powered system that:
-1. **Parses authentic VCF files** (Variant Call Format v4.2).
-2. **Identifies variants** across 6 critical genes: `CYP2D6`, `CYP2C19`, `CYP2C9`, `SLCO1B1`, `TPMT`, `DPYD`.
-3. **Predicts drug-specific risks**: Safe, Adjust Dosage, Toxic, Ineffective, Unknown.
-4. **Generates clinical explanations** using LLMs with specific citations and biological mechanisms.
-5. **Provides dosing recommendations** aligned with CPIC guidelines.
+</div>
 
 ---
 
-## ✨ Features
+## � The Problem
+Adverse Drug Reactions (ADRs) are the **4th leading cause of death** in hospitalized patients.
+-   Standard dosing is "one size fits all," but patients metabolize drugs differently based on their genetics.
+-   Clinical Pharmacogenomic (PGx) reports are often dense, jargon-heavy PDF files that patients cannot understand.
+-   Doctors lack real-time, point-of-care tools to map genetic variants to dosing guidelines.
 
-- **VCF File Parsing** — Supports standard VCF v4.2 format with `GENE`, `STAR`, and `RS` INFO tags
-- **6 Critical Genes Analyzed** — Deep analysis of CYP2D6, CYP2C19, CYP2C9, SLCO1B1, TPMT, DPYD
-- **6 Drug Risk Predictions** — Real-time assessment for CODEINE, WARFARIN, CLOPIDOGREL, SIMVASTATIN, AZATHIOPRINE, FLUOROURACIL
-- **CPIC-Aligned Logic** — Deterministic mapping of genotypes to phenotypes (PM, IM, NM, RM, URM) per medical guidelines
-- **Multi-Client AI Strategy** — Primary analysis via Google Gemini 1.5 Flash with millisecond fallback to Groq/Llama-3
-- **Professional PDF Reports** — One-click generation of clinical-grade reports for electronic health record (EHR) integration
-- **High-Fidelity Dashboard** — Interactive risk distribution charts, gene heatmaps, and structured bioinformatics payloads
-
----
-
-## 👥 Team Structure (4-Person Battle Plan)
-
-To win in a 10-hour sprint, we divide responsibilities to avoid overlap and maximize execution.
-
-### 👤 Person 1: Core Logic Lead (Genomics Brain)
-- **Focus:** VCF Parsing & Genetic Logic.
-- **Tasks:** Build the Python VCF parser; Implement Diplotype/Phenotype mapping; Map Phenotypes to Drug Risks.
-- **Goal:** Input (VCF+Drug) → Output (Risk Profile).
-
-### 👤 Person 2: LLM & Clinical Lead (Explainable AI)
-- **Focus:** Medical Intelligence.
-- **Tasks:** Prompt Engineering; LLM Service integration (OpenAI/ChatGPT); Structured JSON explanation generator.
-- **Goal:** Transform data into clinically sound text.
-
-### 👤 Person 3: Backend Integration Lead (The Architect)
-- **Focus:** System Orchestration.
-- **Tasks:** FastAPI setup; `/analyze` endpoint; Data flow between Person 1 & 2; Error handling & Schemas.
-- **Goal:** A robust API connecting all parts.
-
-### 👤 Person 4: Frontend & Deployment Lead (The Presenter)
-- **Focus:** UI/UX & Live Success.
-- **Tasks:** React UI (Upload, Search, Results); Color-coded risk display; Live deployment (Vercel/Render); LinkedIn Demo capture.
-- **Goal:** Make it look premium and work live.
+## 💡 The Solution: GenRx
+**GenRx** is an AI-powered precision medicine platform that democratizes pharmacogenomics.
+1.  **Ingests raw genetic data** (VCF files) from consumer tests (23andMe, Ancestry) or clinical sequencing.
+2.  **Instantly maps genotypes** to **CPIC Level A** clinical guidelines.
+3.  **Generates plain-English explanations** using advanced LLMs (Gemini 1.5), explaining *why* a drug is risky and *what* to do about it.
+4.  **Provides a Chat Interface** for patients to ask follow-up questions about their own genome.
 
 ---
 
-## ⏳ 10-Hour Sprint Roadmap
+## ⚙️ How It Works
 
-| Time | Phase | Objectives |
-|------|-------|------------|
-| **0-1h** | **Setup** | Initialize `/backend` (FastAPI) and `/frontend` (Vite). |
-| **1-4h** | **Core Build** | Build VCF parser, LLM prompts, and UI components. |
-| **4-6h** | **Integration** | Connect FE to BE. Verify data flow: Upload -> AI -> Display. |
-| **6-8h** | **Polish** | **Crucial:** Match JSON Schema exactly. Add Glassmorphism UI. |
-| **8-9h** | **Deployment** | Deploy to Vercel/Render. Fix CORS/Env issues. |
-| **9-10h**| **Submission**| Record Demo video, final README polish, submit to RIFT. |
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React 19 + Tailwind CSS + Lucide Icons |
-| **Backend** | FastAPI (Python 3.10+) |
-| **AI/LLM** | Google Gemini 1.5 Flash (Primary) + Groq Llama-3 (Fallback) |
-| **Parsing** | Advanced Python VCF Stream Parser (30+ Variants) |
-| **Deployment**| Vercel (Frontend) + Render/Railway (Backend) |
-
----
-
-## 📁 Project Structure
-
-```text
-PHARMA_GUARD/
-├── backend/                # FastAPI Application (Person 1, 2, 3)
-│   ├── main.py             # Entry point & API routes
-│   ├── requirements.txt    # Python dependencies
-│   ├── .env                # OpenAI API Key
-│   ├── services/           
-│   │   ├── vcf_parser.py   # Robust VCF parsing & Gene mapping
-│   │   ├── risk_engine.py  # CPIC-aligned risk assessment engine
-│   │   └── llm_service.py  # Multi-client LLM Clinical explanations
-│   └── models/             # Pydantic models for JSON schema (Person 3)
-├── frontend/               # Vite + React Application (Person 4)
-│   ├── src/
-│   │   ├── components/     # UI elements (DrugInput, ResultsDisplay)
-│   │   ├── App.tsx         # Main interactive UI
-│   │   ├── api.ts          # Logic to call backend /analyze
-│   │   └── types.ts        # TypeScript interfaces
-│   ├── package.json
-│   └── vite.config.ts
-├── samples/                # Sample .vcf files for testing
-├── .gitignore
-└── README.md               # Team Battle Plan & Docs
+```mermaid
+graph LR
+    A[Patient VCF File] -->|Upload| B(VCF Parser Engine)
+    B -->|Extract Variants| C{Risk Assessment Engine}
+    C -->|Match CPIC Rules| D[Clinical Recommendation]
+    C -->|Context| E[LLM Service]
+    E -->|Generate Explanation| F[Final Report]
+    
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style F fill:#bbf,stroke:#333,stroke-width:2px
+    style C fill:#bfb,stroke:#333,stroke-width:4px
 ```
 
+### 1. The VCF Neural Parser (`vcf_parser.py`)
+-   Parses VCF v4.2 files with support for **GRCh37/38** coordinates.
+-   Detects variants via **rsID lookup** OR **Chromosomal Position**.
+-   Calculates **Diplotypes** (e.g., `*1/*4`) and **Phenotypes** (e.g., *Poor Metabolizer*) by summing allele functional status.
+
+### 2. The Risk Engine (`risk_engine.py`)
+Strict implementation of **CPIC (Clinical Pharmacogenetics Implementation Consortium)** guidelines for high-risk drug-gene pairs:
+
+| Drug Class | Target Drug | Primary Gene | Phenotypes Analyzed |
+| :--- | :--- | :--- | :--- |
+| **Pain** | Codeine, Tramadol | `CYP2D6` | PM, IM, NM, URM |
+| **Cardio** | Clopidogrel (Plavix) | `CYP2C19` | PM, IM, NM, URM |
+| **Cardio** | Warfarin | `CYP2C9` | PM, IM, NM |
+| **Statin** | Simvastatin | `SLCO1B1` | PM, IM, NM |
+| **Immunosup.** | Azathioprine | `TPMT` | PM, IM, NM |
+| **Oncology** | Fluorouracil (5-FU) | `DPYD` | PM, IM, NM |
+
+### 3. The Clinical Intelligence Layer (`llm_service.py`)
+-   **Primary Brain**: Google Gemini 1.5 Flash (via API).
+-   **Fallback Brain**: Groq (Llama 3 70B) for high-speed redundancy.
+-   **Safety Net**: Hard-coded rule-based templates if offline.
+-   Generates: *Mechanism of Action*, *Risk Rationale*, and *Patient-Friendly Summary*.
+
 ---
 
-## 🏗️ Architecture
+## � Screenshots
 
+| Upload & Analyze | Interactive Risk Report |
+|:---:|:---:|
+| ![Upload](https://via.placeholder.com/400x250?text=VCF+Upload) | ![Report](https://via.placeholder.com/400x250?text=Risk+Dashboard) |
+| *Drag-and-drop simple interface* | *Clear Red/Yellow/Green risk indicators* |
+
+| AI Genome Chat | PDF Export |
+|:---:|:---:|
+| ![Chat](https://via.placeholder.com/400x250?text=Genome+Chat) | ![PDF](https://via.placeholder.com/400x250?text=Medical+PDF) |
+| *Ask questions about your DNA* | *Clinical-grade reports for doctors* |
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend (The Face)
+-   ![React](https://img.shields.io/badge/-React_19-61DAFB?logo=react&logoColor=black) **React 19**: Latest features including Actions and Optimistic UI.
+-   ![Vite](https://img.shields.io/badge/-Vite-646CFF?logo=vite&logoColor=white) **Vite**: Sub-millisecond HMR.
+-   ![Tailwind](https://img.shields.io/badge/-Tailwind_v4-06B6D4?logo=tailwindcss&logoColor=white) **Tailwind CSS v4**: Zero-runtime styling.
+-   ![Lucide](https://img.shields.io/badge/-Lucide_Icons-F78C6C?logo=lucide&logoColor=white) **Lucide React**: Beautiful, consistent iconography.
+
+### Backend (The Brain)
+-   ![Python](https://img.shields.io/badge/-Python_3.10+-3776AB?logo=python&logoColor=white) **Python 3.10+**: Type-safe logic.
+-   ![FastAPI](https://img.shields.io/badge/-FastAPI-009688?logo=fastapi&logoColor=white) **FastAPI**: Async, high-concurrency API server.
+-   ![Pandas](https://img.shields.io/badge/-Pydantic-E92063?logo=pydantic&logoColor=white) **Pydantic**: Data validation for complex genomic structures.
+
+---
+
+## 🚀 Installation & Setup
+
+### Prerequisites
+-   Python 3.10+
+-   Node.js 18+
+
+### 1. Clone & Configure
+```bash
+git clone https://github.com/yourusername/GenRx.git
+cd GenRx
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        PharmaGuard AI                       │
-│                                                             │
-│  ┌──────────┐    ┌────────────────┐    ┌─────────────────┐  │
-│  │  VCF     │───▶│ FastAPI Backend│───▶│ Genetics Engine │  │
-│  │  Upload  │    │ (Python)       │    │ (Rule-based)    │  │
-│  └──────────┘    └────────────────┘    └────────┬────────┘  │
-│                                                 │           │
-│  ┌──────────┐                         ┌─────────▼────────┐  │
-│  │  Drug    │────────────────────────▶│  LLM (OpenAI)    │  │
-│  │  Input   │                         │  Explanations    │  │
-│  └──────────┘                         └─────────┬────────┘  │
-│                                                 │           │
-│                                       ┌─────────▼────────┐  │
-│                                       │  Structured JSON │  │
-│                                       │  Output Schema   │  │
-│                                       └─────────┬────────┘  │
-│                                                 │           │
-│                                       ┌─────────▼────────┐  │
-│                                       │  Premium React UI│  │
-│                                       │  (Glassmorphism) │  │
-│                                       └──────────────────┘  │
-└─────────────────────────────────────────────────────────────┘
+
+### 2. Backend (FastAPI)
+```bash
+cd backend
+python -m venv venv
+# Activate: source venv/bin/activate (Mac) or venv\Scripts\activate (Win)
+pip install -r requirements.txt
+
+# Create .env file
+echo "GEMINI_API_KEY=your_key_here" > .env
+echo "GROQ_API_KEY=your_key_here" >> .env
+
+uvicorn main:app --reload
 ```
+*Server running at `http://localhost:8000`*
 
----
-
-## 📋 Mandatory JSON Schema (EXACT Match)
-
-```json
-{
-  "patient_id": "PATIENT_XXX",
-  "drug": "DRUG_NAME",
-  "timestamp": "ISO8601_timestamp",
-  "risk_assessment": {
-    "risk_label": "Safe|Adjust Dosage|Toxic|Ineffective|Unknown",
-    "confidence_score": 0.0,
-    "severity": "none|low|moderate|high|critical"
-  },
-  "pharmacogenomic_profile": {
-    "primary_gene": "GENE_SYMBOL",
-    "diplotype": "*X/*Y",
-    "phenotype": "PM|IM|NM|RM|URM|Unknown",
-    "detected_variants": [ { "rsid": "rsXXXX", "gene": "...", "star_allele": "..." } ]
-  },
-  "clinical_recommendation": { "action": "...", "alternative_drugs": [], "cpic_guideline": "..." },
-  "llm_generated_explanation": { "summary": "...", "mechanism": "...", "clinical_implications": "..." },
-  "quality_metrics": { "vcf_parsing_success": true, "variants_detected": 0 }
-}
+### 3. Frontend (React)
+```bash
+cd frontend
+npm install
+npm run dev
 ```
+*App running at `http://localhost:5173`*
 
 ---
 
----
+## � Future Roadmap
+-   [ ] **HL7/FHIR Integration**: Direct messy EGR compatibility.
+-   [ ] **Whole Genome Support**: Expand beyond the core 6 genes.
+-   [ ] **Doctor Portal**: Multi-patient dashboard for clinicians.
+-   [ ] **Mobile App**: React Native port for patients on the go.
 
-## 🎯 Simplified Risk Rules (Rule Engine Logic)
+## 🤝 Contributing
+GenRx is open-source! We welcome PRs for new drug-gene pairs.
+1.  Fork the repo.
+2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes.
+4.  Open a Pull Request.
 
-To ensure clinical accuracy during the 10-hour sprint, we use these established mappings for the 6 target genes:
-
-| Gene | Phenotype | Drug Risk Prediction |
-|------|-----------|----------------------|
-| **CYP2D6** | PM (Poor Metabolizer) | **Ineffective** (for Codeine) |
-| | URM (Ultra-Rapid) | **Toxic** |
-| | IM (Intermediate) | **Adjust Dosage** |
-| **CYP2C9** | Reduced Function | **Adjust Dosage** (for Warfarin) |
-| | Severe Deficiency | **Toxic** |
-| **CYP2C19** | PM (Poor) | **Ineffective** (for Clopidogrel) |
-| | IM (Intermediate) | **Adjust Dosage** |
-| **SLCO1B1** | Reduced Function | **Toxic Risk** (for Simvastatin) |
-| **TPMT** | Low Activity | **Toxic** (for Azathioprine) |
-| **DPYD** | Deficiency | **Toxic** (for Fluorouracil) |
+## � License
+Determined by hackathon rules (MIT License).
 
 ---
 
-## 💡 Technical Breakthroughs (Explain this to Judges)
-
-### 1. The VCF-to-Phenotype Pipeline
-Most AI health apps ask the user to type in their "genotype." PharmaGuard takes raw **VCF files**. Our Python-based parser scans thousands of genomic variants, identifies high-impact rsIDs, calculates the **Activity Score**, and determines the **Clinical Phenotype** (e.g., Ultra-Rapid Metabolizer) *before* the AI is consulted.
-
-### 2. Multi-Model LLM Orchestration
-To ensure 100% uptime, we implemented an **Async Fallback System**.
-- **Gemini 1.5 Flash**: Processes the high-context clinical summary.
-- **Groq Llama-3 70B**: Automatically kicks in if Gemini hits rate limits or latency spikes.
-- **Pydantic Guards**: Every AI response is validated against a strict medical schema; if the AI hallucinates, the system reverts to a rule-based clinical fallback.
-
-### 3. "Clinician-First" Design
-The UI doesn't just show data; it provides **Directives**. 
-- **Green (Safe)**: Proceed with standard dosing.
-- **Yellow (Adjust)**: Specific % dose reductions (calculated by our Risk Engine).
-- **Red (Toxic/Ineffective)**: Strong contraindications with listed alternative medications.
-
----
-
-## 📈 Future Horizon: PharmaGuard 2.0
-- **Polygenic Risk Scores (PRS)**: Integrating hundreds of minor-impact variants for more nuanced risk curves.
-- **EHR Integration**: FHIR API support for seamless connection to hospital systems.
-- **Live Interaction**: A specialized medical chatbot for doctors to "chat" with the genetic report.
-
----
-
----
-
-## 🌍 Deployment Guide (Step-by-Step)
-
-To get PharmaGuard live, follow these specific configurations for the best performance.
-
-### 1. Backend (Render / Railway)
-- **Root Directory**: `backend`
-- **Build Command**: `pip install -r requirements.txt`
-- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port 10000`
-- **Environment Variables**:
-  - `GEMINI_API_KEY`: *Your Google AI Key*
-  - `GROQ_API_KEY`: *Your Groq API Key*
-  - `PYTHON_VERSION`: `3.11` (Ensures compatibility with Pydantic v2 wheels)
-
-### 2. Frontend (Vercel)
-- **Framework Preset**: `Vite`
-- **Root Directory**: `frontend`
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist`
-- **Environment Variables**:
-  - `VITE_API_URL`: *The URL of your deployed Render backend* (e.g., `https://pharmaguard-api.onrender.com`)
-
----
-
-## 📜 License
-
-MIT License — see `LICENSE` for details.
-
----
-
-## 🏷️ Submission Hashtags
-`#RIFT2026` `#PharmaGuard` `#Pharmacogenomics` `#AIinHealthcare`
+<p align="center">
+  Built with ❤️ for <strong>Precision Medicine Hackathon 2026</strong>
+</p>
