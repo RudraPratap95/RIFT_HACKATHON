@@ -9,25 +9,25 @@ interface DrugInputProps {
 
 export const DrugInput: React.FC<DrugInputProps> = ({ drug, setDrug }) => {
   return (
-    <div className="w-full">
-      <label className="block text-sm font-semibold text-slate-700 mb-2">
-        Target Medication
+    <div className="w-full space-y-3">
+      <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
+        Medication Targets
       </label>
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Pill className="h-5 w-5 text-slate-400" />
+      <div className="relative group">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <Pill className="h-5 w-5 text-slate-400 group-focus-within:text-teal-600 transition-colors" />
         </div>
         <input
           type="text"
           value={drug}
           onChange={(e) => setDrug(e.target.value)}
-          placeholder="e.g. Warfarin, Clopidogrel (comma separated)..."
-          className="pl-10 block w-full rounded-lg border border-slate-300 py-2.5 text-slate-900 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm"
+          placeholder="e.g. Warfarin, Clopidogrel..."
+          className="pl-12 block w-full rounded-2xl border border-slate-200 bg-white/50 py-4 text-slate-900 font-bold shadow-inner focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 sm:text-sm transition-all outline-none"
         />
       </div>
 
-      <div className="mt-3">
-        <p className="text-xs text-slate-500 mb-2 font-medium">Common Pharmacogenomic Drugs (Click to Add):</p>
+      <div className="pt-2">
+        <p className="text-[10px] text-slate-400 mb-3 font-black uppercase tracking-tight ml-1">Clinical Reference Panel</p>
         <div className="flex flex-wrap gap-2">
           {EXAMPLE_DRUGS.map((d) => (
             <button
@@ -40,13 +40,13 @@ export const DrugInput: React.FC<DrugInputProps> = ({ drug, setDrug }) => {
                 }
               }}
               className={`
-                px-2.5 py-1 rounded-md text-xs font-medium transition-colors border
-                ${drug.toUpperCase().includes(d)
-                  ? 'bg-teal-600 text-white border-teal-600'
-                  : 'bg-white text-slate-600 border-slate-200 hover:border-teal-300 hover:text-teal-700'}
+                px-3 py-1.5 rounded-xl text-[11px] font-black tracking-tight transition-all border shadow-sm
+                ${drug.toUpperCase().includes(d.toUpperCase())
+                  ? 'bg-slate-900 text-white border-slate-900 scale-105'
+                  : 'bg-white/80 text-slate-600 border-slate-200 hover:border-teal-400 hover:text-teal-700 hover:-translate-y-0.5'}
               `}
             >
-              {d}
+              {d.toUpperCase()}
             </button>
           ))}
         </div>

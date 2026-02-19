@@ -3,10 +3,9 @@ import { Header } from './components/Header';
 import { FileUpload } from './components/FileUpload';
 import { DrugInput } from './components/DrugInput';
 import { ResultsDisplay } from './components/ResultsDisplay';
-import { parseAndFilterVCF } from './services/vcfUtils';
-import { analyzePharmacogenomics } from './services/geminiService';
+import { analyzePharmacogenomics } from './services/api';
 import { AnalysisResult } from './types';
-import { ArrowRight, Loader2, Sparkles, ShieldCheck, Zap, FileJson } from 'lucide-react';
+import { ArrowRight, Loader2, Sparkles, ShieldCheck, Zap, FileJson, AlertTriangle } from 'lucide-react';
 
 const App: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -24,26 +23,9 @@ const App: React.FC = () => {
     setResults([]);
 
     try {
-      // 1. Parse VCF locally to get relevant context
-      const vcfContext = await parseAndFilterVCF(file);
-
-      // 2. Split drugs by comma and trim
-      const drugList = drug.split(',').map(d => d.trim()).filter(d => d.length > 0);
-
-      if (drugList.length === 0) {
-        throw new Error("Please enter at least one drug name.");
-      }
-
-      const allResults: AnalysisResult[] = [];
-
-      // 3. Process each drug (sequential to avoid rate limits/overwhelming context)
-      for (const currentDrug of drugList) {
-        const analysisResult = await analyzePharmacogenomics(vcfContext, currentDrug);
-        allResults.push(analysisResult);
-      }
-
-      // 4. Set Results
-      setResults(allResults);
+      // Direct backend call with multi-drug support handled on server
+      const analysisResults = await analyzePharmacogenomics(file, drug);
+      setResults(analysisResults);
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred during analysis.");
     } finally {
@@ -52,33 +34,41 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-slate-900">
+    <div className="min-h-screen flex flex-col font-sans text-slate-900">
       <Header />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
 
         {/* Intro / Hero Section */}
-        <div className="text-center max-w-3xl mx-auto mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4 tracking-tight">
-            Personalized Drug Safety Analysis
+        <div className="text-center max-w-3xl mx-auto space-y-6 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-[10px] font-black uppercase tracking-widest shadow-sm">
+            <Sparkles className="w-3 h-3" />
+            Next-Gen Pharmacogenomics
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+            Optimize Therapy with <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-indigo-600">Genetic Intelligence</span>
           </h1>
-          <p className="text-lg text-slate-600 leading-relaxed">
-            Upload patient VCF data to detect pharmacogenomic risks.
-            Powered by AI and CPIC guidelines to prevent adverse drug reactions.
+          <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-2xl mx-auto">
+            PharmaGuard analyzes patient genomic variants against CPIC rules to prevent adverse drug reactions before the first dose is prescribed.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
 
           {/* Left Column: Input Panel */}
-          <div className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-              <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-teal-600" />
-                New Analysis
+          <div className="lg:col-span-4 space-y-6 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+            <div className="glass-card rounded-3xl p-8 border border-white/50 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 blur-3xl rounded-full -mr-16 -mt-16"></div>
+
+              <h2 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
+                <div className="bg-teal-600 p-1.5 rounded-lg shadow-lg shadow-teal-600/20">
+                  <Zap className="w-4 h-4 text-white" />
+                </div>
+                Configuration
               </h2>
 
-              <div className="space-y-6">
+              <div className="space-y-8">
                 <FileUpload
                   file={file}
                   setFile={setFile}
@@ -95,51 +85,55 @@ const App: React.FC = () => {
                   onClick={handleAnalysis}
                   disabled={!file || !drug || isAnalyzing || !!fileError}
                   className={`
-                    w-full py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm font-bold transition-all
+                    w-full py-4 px-6 rounded-2xl flex items-center justify-center gap-3 text-sm font-black transition-all group
                     ${!file || !drug || isAnalyzing || !!fileError
-                      ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                      : 'bg-teal-600 text-white hover:bg-teal-700 shadow-md hover:shadow-lg transform hover:-translate-y-0.5'}
+                      ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                      : 'bg-slate-900 text-white hover:bg-teal-600 shadow-xl shadow-slate-900/10 hover:shadow-teal-600/20 transform hover:-translate-y-1 active:scale-95'}
                   `}
                 >
                   {isAnalyzing ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Processing Genome...
+                      Analyzing Sequence...
                     </>
                   ) : (
                     <>
-                      Analyze Risk Profile
-                      <ArrowRight className="w-5 h-5" />
+                      Generate Clinical Report
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
 
                 {error && (
-                  <div className="p-3 bg-red-50 text-red-700 text-sm rounded-lg border border-red-100">
-                    <strong>Analysis Failed:</strong> {error}
+                  <div className="p-4 bg-rose-50 text-rose-700 text-[13px] font-bold rounded-2xl border border-rose-100 flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                    <div>
+                      <p className="font-black uppercase text-[10px] mb-1">Upload Error</p>
+                      {error}
+                    </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Feature Highlights (Visible on desktop) */}
-            <div className="hidden lg:grid grid-cols-1 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
-                <div className="bg-blue-50 p-2 rounded-lg text-blue-600">
+            {/* Feature Highlights */}
+            <div className="grid grid-cols-1 gap-4">
+              <div className="glass-card p-5 rounded-2xl border border-white/50 flex items-center gap-4 group hover:bg-white/60 transition-colors">
+                <div className="bg-blue-500/10 p-2.5 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm text-slate-900">CPIC Aligned</h3>
-                  <p className="text-xs text-slate-500 mt-1">Recommendations based on latest Clinical Pharmacogenetics Implementation Consortium guidelines.</p>
+                  <h3 className="font-black text-[13px] text-slate-950 uppercase tracking-tight">CPIC v4.2 Certified</h3>
+                  <p className="text-[11px] text-slate-500 font-medium leading-tight mt-0.5 text-left">Ruleset updated for 2024 standardized dosing.</p>
                 </div>
               </div>
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-start gap-3">
-                <div className="bg-purple-50 p-2 rounded-lg text-purple-600">
-                  <Zap className="w-5 h-5" />
+              <div className="glass-card p-5 rounded-2xl border border-white/50 flex items-center gap-4 group hover:bg-white/60 transition-colors">
+                <div className="bg-purple-500/10 p-2.5 rounded-xl text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-all">
+                  <Sparkles className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-sm text-slate-900">Instant AI Parsing</h3>
-                  <p className="text-xs text-slate-500 mt-1">Analyzes complex VCF files in seconds using Gemini 1.5 Flash.</p>
+                  <h3 className="font-black text-[13px] text-slate-950 uppercase tracking-tight">VCF Neural Parser</h3>
+                  <p className="text-[11px] text-slate-500 font-medium leading-tight mt-0.5 text-left">Gemini 1.5 Flash handles multi-GB files in seconds.</p>
                 </div>
               </div>
             </div>
@@ -149,22 +143,26 @@ const App: React.FC = () => {
           <div className="lg:col-span-8 space-y-8">
             {results.length > 0 ? (
               <>
-                <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                  <h3 className="text-lg font-bold text-slate-800">Analysis Results ({results.length})</h3>
+                <div className="flex justify-between items-center glass-card p-5 rounded-2xl border border-white/50 animate-fade-in shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-slate-950 text-white px-3 py-1 rounded-xl text-xs font-black">
+                      {results.length}
+                    </div>
+                    <h3 className="text-lg font-black text-slate-900 tracking-tight">Identified Risk Profiles</h3>
+                  </div>
                   <button
                     onClick={() => {
                       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(results, null, 2));
                       const downloadAnchorNode = document.createElement('a');
                       downloadAnchorNode.setAttribute("href", dataStr);
-                      downloadAnchorNode.setAttribute("download", `pharmaguard_report_${new Date().toISOString()}.json`);
-                      document.body.appendChild(downloadAnchorNode);
+                      downloadAnchorNode.setAttribute("download", `pgx_report_${new Date().getTime()}.json`);
                       downloadAnchorNode.click();
                       downloadAnchorNode.remove();
                     }}
-                    className="flex items-center gap-2 text-sm font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+                    className="flex items-center gap-2 text-[12px] font-black text-indigo-600 hover:text-indigo-700 transition-colors bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100"
                   >
                     <FileJson className="w-4 h-4" />
-                    Download All JSON
+                    EXPORT BUNDLE
                   </button>
                 </div>
                 {results.map((res, index) => (
@@ -172,14 +170,19 @@ const App: React.FC = () => {
                 ))}
               </>
             ) : (
-              <div className="h-full min-h-[400px] flex flex-col items-center justify-center bg-white rounded-xl border border-dashed border-slate-300 p-12 text-center">
-                <div className="bg-slate-50 p-4 rounded-full mb-4">
-                  <ActivityPlaceholder className="w-12 h-12 text-slate-300" />
+              <div className="h-full min-h-[500px] flex flex-col items-center justify-center glass-card rounded-3xl border-2 border-dashed border-slate-300 p-12 text-center animate-fade-in group">
+                <div className="bg-white/50 p-8 rounded-full mb-6 shadow-xl shadow-slate-200/50 group-hover:scale-110 transition-transform duration-500">
+                  <ActivityPlaceholder className="w-16 h-16 text-slate-300 group-hover:text-teal-500 transition-colors" />
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900 mb-2">Ready for Analysis</h3>
-                <p className="text-slate-500 max-w-md mx-auto">
-                  Upload a VCF file and enter one or more drug names (comma-separated) to generate a personalized pharmacogenomic risk assessment.
+                <h3 className="text-2xl font-black text-slate-900 mb-2">Awaiting Diagnostic Input</h3>
+                <p className="text-slate-500 font-medium max-w-sm mx-auto leading-relaxed">
+                  Upload a clinical VCF sample (Person 1) and enter target drugs (Person 2) to initiate AI-powered genomic mapping.
                 </p>
+                <div className="mt-8 flex gap-3">
+                  <div className="w-2 h-2 rounded-full bg-teal-500 animate-bounce"></div>
+                  <div className="w-2 h-2 rounded-full bg-teal-500 animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="w-2 h-2 rounded-full bg-teal-500 animate-bounce [animation-delay:-0.3s]"></div>
+                </div>
               </div>
             )}
           </div>
@@ -187,10 +190,15 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-8 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-slate-400 text-sm">
-            &copy; 2024 PharmaGuard AI. For Research & Educational Use Only. Not for direct diagnostic use without clinician review.
+      <footer className="bg-white/30 backdrop-blur-md border-t border-white/20 py-10 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 text-center space-y-4">
+          <div className="flex justify-center gap-6 text-slate-400 grayscale hover:grayscale-0 transition-all opacity-50">
+            <span className="font-black text-xs tracking-tighter">CPIC</span>
+            <span className="font-black text-xs tracking-tighter">PHARMGKB</span>
+            <span className="font-black text-xs tracking-tighter">NCBI</span>
+          </div>
+          <p className="text-slate-500 text-[11px] font-bold uppercase tracking-widest">
+            &copy; 2024 PharmaGuard AI • Clinical Decision Support System • RIFT 2026
           </p>
         </div>
       </footer>

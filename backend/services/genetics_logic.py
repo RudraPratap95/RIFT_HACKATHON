@@ -8,16 +8,17 @@ def parse_vcf(vcf_text: str) -> Dict[str, Any]:
     # TODO: Implement robust VCF parsing logic
     return {"variants_found": 0, "genes_covered": []}
 
-def map_genetics_to_risk(vcf_data: Dict[str, Any], drug_name: str) -> Dict[str, Any]:
+def map_genetics_to_risk(vcf_text: str, drug_name: str) -> Dict[str, Any]:
     """
     Uses CPIC-aligned rules to map variants to diplotype/phenotype/risk.
     """
-    # TODO: Implement rule-based risk mapping
-    # 1. Determine Diplotype (e.g., *1/*4)
-    # 2. Determine Phenotype (e.g., IM)
-    # 3. Predict Drug Risk (e.g., Adjust Dosage)
+    # TODO: Implement rule-based risk mapping (Person 1)
+    
     return {
         "risk_label": "Safe",
         "phenotype": "NM",
-        "diplotype": "*1/*1"
+        "diplotype": "*1/*1",
+        "vcf_context": vcf_text[:10000], # Pass a snippet to the LLM
+        "variants_detected": 0,
+        "primary_gene": "CYP2D6" # Placeholder
     }
