@@ -471,9 +471,11 @@ curl http://localhost:8000/drugs
 
 ### Base URL
 ```
-http://localhost:8000          # Local development
-https://pharmaguard.onrender.com  # Production (replace with your URL)
+http://localhost:8000                       # Local development
+https://pw-hackathon-zeta.vercel.app/api   # Live Production Backend
 ```
+
+> 🌐 **Live App**: [https://pw-hackathon-zeta.vercel.app/](https://pw-hackathon-zeta.vercel.app/)
 
 ---
 
@@ -514,6 +516,13 @@ Returns the list of all supported drugs.
 
 **Example cURL:**
 ```bash
+# Against live deployment:
+curl -X POST https://pw-hackathon-zeta.vercel.app/api/analyze \
+  -F "vcf_file=@sample_vcf/sample_high_risk.vcf" \
+  -F "drugs=CODEINE,WARFARIN,CLOPIDOGREL" \
+  -F "patient_id=PATIENT_007"
+
+# Or against local backend:
 curl -X POST http://localhost:8000/analyze \
   -F "vcf_file=@sample_vcf/sample_high_risk.vcf" \
   -F "drugs=CODEINE,WARFARIN,CLOPIDOGREL" \
@@ -524,9 +533,12 @@ curl -X POST http://localhost:8000/analyze \
 ```python
 import requests
 
+# Use live deployment or local backend
+API_URL = "https://pw-hackathon-zeta.vercel.app/api"  # or "http://localhost:8000"
+
 with open("sample_vcf/sample_high_risk.vcf", "rb") as f:
     response = requests.post(
-        "http://localhost:8000/analyze",
+        f"{API_URL}/analyze",
         files={"vcf_file": f},
         data={"drugs": "CODEINE,WARFARIN", "patient_id": "PATIENT_007"}
     )
@@ -607,7 +619,7 @@ chr22   42522613    rs3892097   C    T    99    PASS    GENE=CYP2D6;STAR=*4;RS=3
 
 ### Example 1: Upload via Web Interface
 
-1. Open `http://localhost:3000`
+1. Open **[https://pw-hackathon-zeta.vercel.app/](https://pw-hackathon-zeta.vercel.app/)** (live app) or `http://localhost:3000` (local)
 2. Drag & drop `sample_vcf/sample_high_risk.vcf` onto the upload zone
 3. Type `CODEINE, WARFARIN, AZATHIOPRINE` in the drug input field
 4. Click **"Generate Clinical Report"**
@@ -621,8 +633,10 @@ chr22   42522613    rs3892097   C    T    99    PASS    GENE=CYP2D6;STAR=*4;RS=3
 import requests, json
 
 # Analyze a high-risk patient for cancer drugs
+API_URL = "https://pw-hackathon-zeta.vercel.app/api"  # or "http://localhost:8000"
+
 with open("sample_vcf/sample_high_risk.vcf", "rb") as f:
-    r = requests.post("http://localhost:8000/analyze",
+    r = requests.post(f"{API_URL}/analyze",
         files={"vcf_file": ("patient.vcf", f, "text/plain")},
         data={"drugs": "FLUOROURACIL,AZATHIOPRINE", "patient_id": "ONCOLOGY_PATIENT_001"}
     )
@@ -645,8 +659,8 @@ with open("report.json", "w") as f:
 ### Example 3: Test All Drugs at Once
 
 ```bash
-# Quick batch test using the safe patient VCF
-curl -X POST http://localhost:8000/analyze \
+# Quick batch test using the safe patient VCF (live deployment)
+curl -X POST https://pw-hackathon-zeta.vercel.app/api/analyze \
   -F "vcf_file=@sample_vcf/sample_safe.vcf" \
   -F "drugs=CODEINE,WARFARIN,CLOPIDOGREL,SIMVASTATIN,AZATHIOPRINE,FLUOROURACIL" \
   -F "patient_id=BASELINE_TEST" | \
@@ -710,28 +724,13 @@ PW_HACKATHON/
 
 | Name |
 |---|
-| **[Team Member 1]** | 
-| **[Team Member 2]** | 
-| **[Team Member 3]** |
-| **[Team Member 4]** | 
+| **[Nisha Rathour]** | 
+| **[Rudra Pratap Singh]** | 
+| **[Ritesh Singh]** |
+| **[Sameer Maurya]** | 
 
 > Built for **RIFT 2026 Hackathon** — GenRx (PharmaGuard Problem Statement)  
-> Submission hashtags: `#RIFT2026` `#PharmaGuard` `#Pharmacogenomics` `#AIinHealthcare`
-
----
-
-## 🗺️ Roadmap
-
-- [ ] **VKORC1 Integration** — Secondary gene for warfarin + CYP4F2 for dosing refinement
-- [ ] **HL7 FHIR Export** — EHR-compatible structured output for clinical integration
-- [ ] **Whole Genome Support** — Expand beyond 6 genes to full PharmVar catalog (>100 genes)
-- [ ] **HLA Typing** — Add HLA-B*57:01 (abacavir), HLA-B*15:02 (carbamazepine) support
-- [ ] **Doctor Portal** — Multi-patient dashboard with batch VCF processing
-- [ ] **Mobile App** — React Native port with camera-based VCF QR scanning
-- [ ] **Population Stratification** — Ancestry-adjusted phenotype frequency with gnomAD data
-- [ ] **ClinVar API Integration** — Real-time variant significance lookup
-
----
+> Submission hashtags: `#RIFT2026`
 
 ## 📄 License
 
