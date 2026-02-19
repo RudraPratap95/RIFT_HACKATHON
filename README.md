@@ -233,19 +233,28 @@ The UI doesn't just show data; it provides **Directives**.
 
 ---
 
-## 🚀 Installation & Setup
+---
 
-### 🖥️ Backend (FastAPI)
-1. **Navigate to backend:** `cd backend`
-2. **Setup Virtual Env:** `python -m venv venv` and `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
-3. **Install dependencies:** `pip install -r requirements.txt`
-4. **Environment:** Create a `.env` file with `GEMINI_API_KEY` and `GROQ_API_KEY`.
-5. **Run:** `uvicorn main:app --reload`
+## 🌍 Deployment Guide (Step-by-Step)
 
-### 💻 Frontend (React + Vite)
-1. **Navigate to frontend:** `cd frontend`
-2. **Install dependencies:** `npm install`
-3. **Run:** `npm run dev`
+To get PharmaGuard live, follow these specific configurations for the best performance.
+
+### 1. Backend (Render / Railway)
+- **Root Directory**: `backend`
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn main:app --host 0.0.0.0 --port 10000`
+- **Environment Variables**:
+  - `GEMINI_API_KEY`: *Your Google AI Key*
+  - `GROQ_API_KEY`: *Your Groq API Key*
+  - `PYTHON_VERSION`: `3.11` (Ensures compatibility with Pydantic v2 wheels)
+
+### 2. Frontend (Vercel)
+- **Framework Preset**: `Vite`
+- **Root Directory**: `frontend`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Environment Variables**:
+  - `VITE_API_URL`: *The URL of your deployed Render backend* (e.g., `https://pharmaguard-api.onrender.com`)
 
 ---
 
