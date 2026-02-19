@@ -42,7 +42,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
 
   return (
     <div className="space-y-6 animate-slide-up">
-      {/* Top Summary Card */}
+      {/* Top Summary Cards */}
       <div className="glass-card rounded-2xl overflow-hidden backdrop-blur-md">
         <div className="p-4 sm:p-6 border-b border-white/40 bg-white/30">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
@@ -146,7 +146,7 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
               <h3 className="text-xs font-black text-slate-500 uppercase tracking-widest">Genomic Profile</h3>
             </div>
             <div className="bg-white/60 border border-white/80 rounded-2xl p-6 shadow-sm ring-1 ring-slate-100/50 h-full">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-2 gap-6">
                 <div className="text-left">
                   <p className="text-[10px] text-indigo-400 font-black uppercase tracking-widest">Target Gene</p>
                   <p className="text-2xl font-black text-indigo-900 leading-tight flex items-baseline gap-1">
