@@ -85,10 +85,4 @@ class AnalysisResult(BaseModel):
     llm_generated_explanation: LLMExplanation
     quality_metrics: QualityMetrics
 
-class ChatRequest(BaseModel):
-    query: str
-    context: List[AnalysisResult]
 
-class ChatResponse(BaseModel):
-    response: str
-    suggested_follow_ups: List[str]

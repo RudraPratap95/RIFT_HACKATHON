@@ -4,7 +4,7 @@ import { FileUpload } from './components/FileUpload';
 import { DrugInput } from './components/DrugInput';
 import { Dashboard } from './components/Dashboard';
 import { ResultsDisplay } from './components/ResultsDisplay';
-import { GenomeChat } from './components/GenomeChat';
+
 import { AnalysisLoader } from './components/AnalysisLoader';
 import { useAnalysis } from './hooks/useAnalysis';
 import { generatePDFReport, exportJSON } from './utils/exportUtils';
@@ -262,7 +262,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {results && <GenomeChat analysisResults={results} />}
+
 
       <footer className="bg-white/30 backdrop-blur-md border-t border-white/20 py-10 mt-auto">
         <div className="max-w-7xl mx-auto px-4 text-center space-y-4">
