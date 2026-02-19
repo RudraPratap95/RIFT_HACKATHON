@@ -8,9 +8,13 @@ from models.models import (
     ChatRequest, ChatResponse
 )
 from services import vcf_parser, risk_engine, llm_service
+from dotenv import load_dotenv
 import time
 import os
 import uuid
+
+# Load environment variables
+load_dotenv()
 
 app = FastAPI(title="PharmaGuard AI API", version="1.1.0")
 

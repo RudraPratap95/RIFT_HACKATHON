@@ -44,32 +44,32 @@ export const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ result }) => {
     <div className="space-y-6 animate-slide-up">
       {/* Top Summary Card */}
       <div className="glass-card rounded-2xl overflow-hidden backdrop-blur-md">
-        <div className="p-6 border-b border-white/40 bg-white/30">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="bg-teal-500 p-3 rounded-xl shadow-lg shadow-teal-500/20">
-                <Beaker className="w-6 h-6 text-white" />
+        <div className="p-4 sm:p-6 border-b border-white/40 bg-white/30">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="bg-teal-500 p-2.5 sm:p-3 rounded-xl shadow-lg shadow-teal-500/20 shrink-0">
+                <Beaker className="w-5 h-5 sm:w-6 sm:w-6 text-white" />
               </div>
-              <div className="text-left">
-                <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+              <div className="text-left min-w-0">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight truncate">
                   {result.drug}
-                  <span className="ml-2 text-slate-400 font-medium text-lg italic">Clinical Analysis</span>
+                  <span className="hidden sm:inline ml-2 text-slate-400 font-medium text-lg italic">Analysis</span>
                 </h2>
-                <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
-                  <span className="bg-slate-100 px-2 py-0.5 rounded font-mono text-[10px] uppercase font-bold tracking-tight">{result.patient_id}</span>
-                  <span className="opacity-30">•</span>
-                  <span className="font-medium">{new Date(result.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                <div className="flex items-center gap-2 sm:gap-3 text-xs text-slate-500 mt-0.5">
+                  <span className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-[9px] uppercase font-bold tracking-tight shrink-0">{result.patient_id}</span>
+                  <span className="opacity-30 flex-shrink-0">•</span>
+                  <span className="font-medium truncate">{new Date(result.timestamp).toLocaleDateString()}</span>
                 </div>
               </div>
             </div>
 
-            <div className={`px-5 py-3 rounded-2xl border-2 ring-4 shadow-sm flex items-center gap-4 transition-all hover:scale-105 ${getRiskColor(result.risk_assessment.severity)}`}>
-              <div className="p-2 bg-white rounded-full shadow-inner animate-pulse">
+            <div className={`px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl border-2 ring-4 shadow-sm flex items-center gap-3 sm:gap-4 transition-all hover:scale-[1.02] ${getRiskColor(result.risk_assessment.severity)}`}>
+              <div className="p-1.5 sm:p-2 bg-white rounded-full shadow-inner animate-pulse shrink-0">
                 {getRiskIcon(result.risk_assessment.severity)}
               </div>
               <div className="flex flex-col text-left">
-                <span className="text-[10px] uppercase font-black tracking-widest opacity-60">Risk Result</span>
-                <span className="text-xl font-black leading-none uppercase tracking-tight">{result.risk_assessment.risk_label}</span>
+                <span className="text-[9px] sm:text-[10px] uppercase font-black tracking-widest opacity-60">Risk Result</span>
+                <span className="text-lg sm:text-xl font-black leading-none uppercase tracking-tight">{result.risk_assessment.risk_label}</span>
               </div>
             </div>
           </div>

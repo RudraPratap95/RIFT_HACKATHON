@@ -8,6 +8,10 @@ import os
 import json
 import httpx
 from typing import Optional, Dict, List
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ─────────────────────────────────────────────────────────────────────────────
 # LLM CLIENT FACTORY

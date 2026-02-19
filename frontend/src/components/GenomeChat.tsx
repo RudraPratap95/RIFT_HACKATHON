@@ -88,42 +88,42 @@ export const GenomeChat: React.FC<GenomeChatProps> = ({ analysisResults }) => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end pointer-events-none">
       {/* Chat Window */}
       {isOpen && (
-        <div className="w-[calc(100vw-2rem)] sm:w-[400px] h-[70vh] sm:h-[600px] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-slide-up mb-4 glass-card">
+        <div className="w-[calc(100vw-2rem)] sm:w-[380px] h-[65vh] sm:h-[550px] max-h-[80vh] bg-white/95 backdrop-blur-xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white/20 flex flex-col overflow-hidden animate-slide-up mb-4 pointer-events-auto">
           {/* Header */}
-          <div className="bg-slate-900 p-5 flex items-center justify-between">
+          <div className="bg-slate-900 p-4 sm:p-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-teal-500 p-2 rounded-xl">
+              <div className="bg-teal-500 p-2 rounded-xl shadow-lg shadow-teal-500/20">
                 <Bot className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-black text-sm tracking-tight">PharmaGuard AI</h3>
-                <div className="flex items-center gap-1.5">
+                <h3 className="text-white font-black text-sm tracking-tight leading-none">PharmaGuard AI</h3>
+                <div className="flex items-center gap-1.5 mt-1">
                   <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-pulse"></div>
-                  <span className="text-[10px] text-teal-400 font-bold uppercase tracking-widest">Clinical Assistant</span>
+                  <span className="text-[9px] text-teal-400 font-bold uppercase tracking-widest">Clinical Assistant</span>
                 </div>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-white transition-colors"
+              className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-all"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 text-white" />
             </button>
           </div>
 
           {/* Messages */}
-          <div className="flex-grow overflow-y-auto p-5 space-y-4 bg-slate-50/30">
+          <div className="flex-grow overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/50">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] p-4 rounded-2xl text-[13px] font-medium leading-relaxed shadow-sm ${msg.sender === 'user'
-                  ? 'bg-indigo-600 text-white rounded-br-none'
+                <div className={`max-w-[85%] p-3.5 sm:p-4 rounded-2xl text-[13px] font-medium leading-relaxed shadow-sm ${msg.sender === 'user'
+                  ? 'bg-slate-900 text-white rounded-br-none'
                   : 'bg-white border border-slate-100 text-slate-700 rounded-bl-none'
                   }`}>
                   {msg.text}
-                  <div className={`text-[9px] mt-2 opacity-60 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
+                  <div className={`text-[8px] mt-2 font-bold opacity-40 uppercase tracking-widest ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -131,9 +131,13 @@ export const GenomeChat: React.FC<GenomeChatProps> = ({ analysisResults }) => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 text-teal-500 animate-spin" />
-                  <span className="text-xs text-slate-400 font-bold italic">Synthesizing clinical response...</span>
+                <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-3">
+                  <div className="flex gap-1">
+                    <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce"></div>
+                    <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Thinking...</span>
                 </div>
               </div>
             )}
@@ -141,7 +145,7 @@ export const GenomeChat: React.FC<GenomeChatProps> = ({ analysisResults }) => {
           </div>
 
           {/* Footer */}
-          <div className="p-4 bg-white border-t border-slate-100 space-y-4">
+          <div className="p-4 bg-white border-t border-slate-100 space-y-3">
             {/* Suggestions */}
             {!isLoading && suggestedFollowUps.length > 0 && (
               <div className="flex flex-wrap gap-2">
@@ -149,7 +153,7 @@ export const GenomeChat: React.FC<GenomeChatProps> = ({ analysisResults }) => {
                   <button
                     key={i}
                     onClick={() => handleSend(suggestion)}
-                    className="text-[11px] font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-100 px-3 py-1.5 rounded-full transition-all text-left"
+                    className="text-[10px] font-black text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-100 px-3 py-2 rounded-xl transition-all text-left uppercase tracking-tight active:scale-95"
                   >
                     {suggestion}
                   </button>
@@ -170,21 +174,21 @@ export const GenomeChat: React.FC<GenomeChatProps> = ({ analysisResults }) => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about your results..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3 pl-4 pr-12 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-12 text-sm font-bold placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 transition-all shadow-inner"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || isLoading}
-                className="absolute right-2 top-1.5 p-2 bg-slate-900 text-white rounded-xl disabled:opacity-30 transition-all hover:bg-teal-600 shadow-md"
+                className="absolute right-1.5 top-1.5 p-2 bg-slate-900 text-white rounded-lg disabled:opacity-30 transition-all hover:bg-teal-600 shadow-xl shadow-slate-900/10 active:scale-90"
               >
                 <Send className="w-4 h-4" />
               </button>
             </form>
 
-            <div className="flex items-start gap-2 px-1">
-              <AlertCircle className="w-3 h-3 text-slate-300 shrink-0 mt-0.5" />
-              <p className="text-[9px] text-slate-400 font-medium leading-tight">
-                AI can make mistakes. Always consult your healthcare provider before changing medications.
+            <div className="flex items-center gap-2 px-1">
+              <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+              <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">
+                Clinical Decision Support Assistant
               </p>
             </div>
           </div>
@@ -194,14 +198,14 @@ export const GenomeChat: React.FC<GenomeChatProps> = ({ analysisResults }) => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`bg-slate-900 text-white p-4 rounded-full shadow-2xl shadow-slate-900/40 transform transition-all hover:scale-110 active:scale-95 group flex items-center gap-3 ${isOpen ? 'bg-teal-600' : ''}`}
+        className={`bg-slate-900 text-white p-3.5 sm:p-4 rounded-2xl shadow-2xl shadow-slate-900/30 transform transition-all hover:scale-105 active:scale-90 group flex items-center gap-3 pointer-events-auto border border-white/10 ${isOpen ? 'bg-teal-600 rotate-0' : ''}`}
       >
         {!isOpen && (
-          <div className="overflow-hidden w-0 group-hover:w-32 transition-all duration-300 text-sm font-black uppercase tracking-widest whitespace-nowrap">
-            Genome Chat
+          <div className="overflow-hidden w-0 group-hover:w-28 transition-all duration-500 text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
+            Genome AI
           </div>
         )}
-        {isOpen ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
+        {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6" />}
       </button>
     </div>
   );

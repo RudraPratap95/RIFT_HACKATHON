@@ -71,7 +71,7 @@ const App: React.FC = () => {
     <div className="min-h-screen flex flex-col font-sans text-slate-900">
       <Header currentView={view} setCurrentView={setView} />
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 space-y-8 md:space-y-12">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12 space-y-8 md:space-y-12 overflow-x-hidden">
         {view === 'analysis' ? (
           <>
             {/* Intro / Hero Section */}
@@ -206,31 +206,31 @@ const App: React.FC = () => {
               <div className="lg:col-span-8 space-y-8">
                 {results ? (
                   <>
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 glass-card p-5 rounded-2xl border border-white/50 animate-fade-in shadow-lg">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 glass-card p-4 sm:p-5 rounded-3xl border border-white/50 animate-fade-in shadow-xl shadow-slate-200/50">
                       <div className="flex items-center gap-3">
-                        <div className="bg-slate-950 text-white px-3 py-1 rounded-xl text-xs font-black">
+                        <div className="bg-slate-950 text-white px-3 py-1.5 rounded-xl text-xs font-black shadow-lg">
                           {results.length}
                         </div>
-                        <h3 className="text-lg font-black text-slate-900 tracking-tight">Identified Risk Profiles</h3>
+                        <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">Identified Risk Profiles</h3>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                      <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
                         <button
                           onClick={handleExportPDF}
-                          className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 text-[12px] font-black text-white bg-teal-600 hover:bg-teal-700 transition-all px-4 py-2 rounded-xl shadow-lg shadow-teal-600/20"
+                          className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 text-[11px] font-black text-white bg-teal-600 hover:bg-teal-700 transition-all px-5 py-2.5 rounded-xl shadow-lg shadow-teal-600/20 active:scale-95"
                         >
                           <FileText className="w-4 h-4" />
                           PDF REPORT
                         </button>
                         <button
                           onClick={handleExportJSON}
-                          className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 text-[12px] font-black text-slate-600 hover:text-slate-900 transition-colors bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl border border-slate-200"
+                          className="flex-grow sm:flex-grow-0 flex items-center justify-center gap-2 text-[11px] font-black text-slate-600 hover:text-slate-900 transition-colors bg-white hover:bg-slate-50 px-5 py-2.5 rounded-xl border border-slate-200 active:scale-95"
                         >
                           <FileJson className="w-4 h-4" />
                           DATA BUNDLE
                         </button>
                         <button
                           onClick={handleNewAnalysis}
-                          className="p-2 text-slate-400 hover:text-rose-600 transition-colors ml-auto sm:ml-0"
+                          className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all ml-auto sm:ml-0 active:rotate-180 duration-500"
                           title="New Analysis"
                         >
                           <RefreshCcw className="w-5 h-5" />
