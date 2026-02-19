@@ -72,16 +72,14 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setCurrentView }) =
       </div>
 
       {/* Mobile Sidebar Overlay */}
-      {isMenuOpen && (
-        <div
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] md:hidden animate-fade-in"
-          onClick={toggleMenu}
-        />
-      )}
+      <div
+        className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[90] md:hidden transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        onClick={toggleMenu}
+      />
 
       {/* Mobile Sidebar Content */}
-      <div className={`fixed top-0 right-0 h-full w-[280px] bg-white z-[100] md:hidden shadow-2xl transition-transform duration-300 ease-out border-l border-slate-100 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex flex-col h-full">
+      <div className={`fixed top-0 right-0 h-full w-[280px] bg-white z-[100] md:hidden shadow-2xl transition-all duration-300 ease-out border-l border-slate-100 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full invisible'}`}>
+        <div className="flex flex-col h-full pointer-events-auto">
           <div className="p-6 border-b border-slate-100 flex items-center justify-between">
             <span className="font-black text-xl text-slate-900">Navigation</span>
             <button onClick={toggleMenu} className="p-2 text-slate-400 hover:text-slate-600">
