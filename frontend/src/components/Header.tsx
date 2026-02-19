@@ -29,11 +29,11 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setCurrentView }) =
             </div>
             <div className="flex flex-col">
               <span className="font-black text-xl sm:text-2xl text-slate-900 leading-tight tracking-tight">
-                Pharma<span className="text-teal-600">Guard</span>
+                Gen<span className="text-teal-600">Rx</span>
                 <span className="ml-0.5 text-slate-400 font-medium text-lg">AI</span>
               </span>
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-100 w-fit px-1.5 py-0.5 rounded mt-0.5">
-                Precision PGx Platform
+                Genetics + Prescription
               </span>
             </div>
           </div>
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setCurrentView }) =
                   <Dna className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-black text-xl tracking-tight leading-none uppercase">Pharma<span className="text-teal-400">Guard</span></span>
+                  <span className="font-black text-xl tracking-tight leading-none uppercase">Gen<span className="text-teal-400">Rx</span></span>
                   <span className="text-[10px] font-black text-teal-300/60 uppercase tracking-[0.2em] mt-1">v1.1 RIFT Edition</span>
                 </div>
               </div>
@@ -173,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setCurrentView }) =
               </div>
             </div>
             <p className="mt-6 text-[10px] text-slate-400 font-black text-center uppercase tracking-[0.2em] opacity-40">
-              © 2026 PharmaGuard AI • RIFT
+              © 2026 GenRx AI • RIFT
             </p>
           </div>
         </div>

@@ -16,7 +16,7 @@ import uuid
 # Load environment variables
 load_dotenv()
 
-app = FastAPI(title="PharmaGuard AI API", version="1.1.0")
+app = FastAPI(title="GenRx AI API", version="1.1.0")
 
 # Configure CORS for frontend access
 app.add_middleware(
@@ -32,7 +32,7 @@ async def root():
     return {
         "status": "online",
         "version": "1.1.0",
-        "service": "PharmaGuard AI Backend"
+        "service": "GenRx AI Backend"
     }
 
 @app.get("/drugs")
