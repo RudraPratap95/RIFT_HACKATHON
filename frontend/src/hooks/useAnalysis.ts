@@ -74,7 +74,21 @@ export function useAnalysis() {
       return data;
     } catch (err: any) {
       clearInterval(stepInterval);
-      setError(err.message || 'Analysis failed. Please check the VCF file and try again.');
+
+      let friendlyError = err.message;
+
+      // Map common technical errors to user-friendly messages
+      if (err.message.includes('404')) {
+        friendlyError = "Analysis service unreachable. Please ensure the backend is running.";
+      } else if (err.message.includes('500')) {
+        friendlyError = "The VCF file could not be parsed. It may be corrupted or use a non-standard format.";
+      } else if (err.message.includes('NetworkError') || err.message.includes('Failed to fetch')) {
+        friendlyError = "Connection failed. Please check your internet or local server.";
+      } else if (err.message.includes('Missing columns')) {
+        friendlyError = "Invalid VCF structure. Missing required columns (CHROM, POS, ID, REF, ALT).";
+      }
+
+      setError(friendlyError);
       throw err;
     } finally {
       setLoading(false);
