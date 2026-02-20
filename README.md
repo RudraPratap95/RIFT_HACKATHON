@@ -11,7 +11,7 @@
 > **"Your DNA is unique. Your medication should be too."**
 
 [![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Visit_App-0D9488?style=for-the-badge)](https://pw-hackathon-zeta.vercel.app/)
-[![LinkedIn Demo Video](https://img.shields.io/badge/▶️_Demo_Video-LinkedIn-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/posts/your-linkedin-post-here)
+[![LinkedIn Demo Video](https://img.shields.io/badge/▶️_Demo_Video-LinkedIn-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/posts/nisha1608_rift2026-pharmaguard-pharmacogenomics-activity-7430411517449330688-uCQw?utm_source=share&utm_medium=member_desktop&rcm=ACoAAEcycvUBolScL1hN-ncdMfmSGS56nEENA6s)
 [![GitHub](https://img.shields.io/badge/⭐_Star_Repo-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/Nisha1608/PW_HACKATHON)
 
 <br/>
